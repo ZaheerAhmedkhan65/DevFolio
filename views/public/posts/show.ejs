@@ -1,0 +1,28 @@
+
+<div class="container mx-auto py-10 max-w-4xl">
+    <h1 class="text-4xl font-bold mb-4"><%= post.title %></h1>
+
+    <div class="flex items-center text-gray-500 text-sm mb-6">
+        <span>By <%= post.user_id %></span>
+        <span class="mx-2">•</span>
+        <span><%= new Date(post.published_at).toDateString() %></span>
+        <span class="mx-2">•</span>
+        <span><%= post.read_time %> min read</span>
+    </div>
+
+    <% if (post.featured_image_url) { %>
+        <img src="<%= post.featured_image_url %>" class="w-full rounded-lg mb-6">
+    <% } %>
+
+    <div class="prose max-w-none">
+        <%- post.content %>
+    </div>
+
+    <div class="mt-8 flex gap-3">
+        <% tags.forEach(tag => { %>
+            <a class="px-3 py-1 bg-gray-200 text-sm rounded" href="/tags/<%= tag.slug %>">
+                #<%= tag.name %>
+            </a>
+        <% }) %>
+    </div>
+</div>

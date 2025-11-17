@@ -1,0 +1,110 @@
+<!-- MAIN LAYOUT GRID -->
+<div class="container mx-auto px-4 pt-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT SIDEBAR -->
+        <aside class="hidden lg:block lg:col-span-2 bg-white shadow rounded-xl p-4 h-[90vh] sticky top-4">
+            <h2 class="text-lg font-semibold mb-4">Navigation</h2>
+
+            <ul class="space-y-2">
+                <li>
+                    <a href="/" class="block px-3 py-2 rounded-md hover:bg-gray-100">Home</a>
+                </li>
+                <li>
+                    <button onclick="openCreatePostModal()"
+                        class="block px-3 py-2 rounded-md hover:bg-gray-100 w-full text-left">
+                        Create Post
+                    </button>
+
+                </li>
+                <li>
+                    <a href="/profiles" class="block px-3 py-2 rounded-md hover:bg-gray-100">Developers</a>
+                </li>
+                <li>
+                    <a href="/projects" class="block px-3 py-2 rounded-md hover:bg-gray-100">Projects</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- CENTER FEED -->
+        <main class="col-span-1 lg:col-span-7">
+            <h1 class="text-2xl font-bold mb-4">Recent Posts</h1>
+
+            <% if (posts.length===0) { %>
+                <p class="text-gray-500">No posts yet.</p>
+                <% } %>
+
+                    <div class="space-y-6">
+                        <% posts.forEach(post=> { %>
+                            <article class="bg-white shadow rounded-xl p-5 hover:shadow-md transition shadow-sm">
+
+                                <!-- Featured Image -->
+                                <% if (post.featured_image_url) { %>
+                                    <img src="<%= post.featured_image_url %>"
+                                        class="rounded-lg mb-3 w-full h-48 object-cover" />
+                                    <% } %>
+
+                                        <h2 class="text-xl font-semibold">
+                                            <a href="/posts/<%= post.slug %>" class="hover:text-blue-600">
+                                                <%= post.title %>
+                                            </a>
+                                        </h2>
+
+                                        <p class="text-gray-600 text-sm mt-1">
+                                            By <strong>
+                                                <%= post.author_name %>
+                                            </strong> ·
+                                            <%= new Date(post.published_at || post.created_at).toLocaleDateString() %> ·
+                                                <%= post.read_time %> min read
+                                        </p>
+
+                                        <p class="text-gray-700 mt-3">
+                                            <%= post.excerpt %>
+                                        </p>
+
+                                        <a href="/posts/<%= post.id %>"
+                                            class="inline-block mt-3 text-blue-600 hover:underline">
+                                            Read more →
+                                        </a>
+                            </article>
+                            <% }) %>
+                    </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="hidden lg:block lg:col-span-3 h-[90vh] sticky top-4">
+            <div class="bg-white shadow rounded-xl p-4 mb-6">
+                <h2 class="text-lg font-semibold mb-3">Activity</h2>
+
+                <ul class="text-gray-600 space-y-2">
+                    <li>🔥 User A published a new post</li>
+                    <li>📌 User B updated their profile</li>
+                    <li>⭐ User C followed you</li>
+                </ul>
+            </div>
+
+            <div class="bg-white shadow rounded-xl p-4">
+                <h2 class="text-lg font-semibold mb-3">Who to Follow</h2>
+
+                <div class="space-y-3">
+                    <% suggestions.forEach(s=> { %>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">
+                                    <%= s.name %>
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    <%= s.title %>
+                                </p>
+                            </div>
+                            <a href="/profiles/<%= s.id %>" class="px-3 py-1 text-sm bg-blue-600 text-white rounded-md">
+                                View
+                            </a>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+</div>

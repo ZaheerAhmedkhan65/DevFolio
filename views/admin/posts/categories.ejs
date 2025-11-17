@@ -1,0 +1,171 @@
+<div class="max-w-5xl mx-auto p-6">
+
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Post Categories</h1>
+
+    <!-- Create New Category -->
+    <div class="bg-white p-4 rounded-xl shadow mb-6">
+        <h2 class="text-xl font-semibold mb-3">Create New Category</h2>
+
+        <form id="createCatForm" class="grid grid-cols-3 gap-3">
+            <input type="text" name="name" placeholder="Category Name" class="p-2 border rounded-md" required />
+
+            <input type="text" name="slug" placeholder="Slug" class="p-2 border rounded-md" required />
+
+            <input type="text" name="description" placeholder="Description" class="p-2 border rounded-md col-span-3" />
+
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md col-span-3 w-32">
+                Add
+            </button>
+        </form>
+    </div>
+
+
+    <!-- Categories Table -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="bg-gray-200 text-left">
+                    <th class="p-3">Name</th>
+                    <th class="p-3">Slug</th>
+                    <th class="p-3 w-1/2">Description</th>
+                    <th class="p-3">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <% cats.forEach(cat=> { %>
+                    <tr id="row-<%= cat.id %>" class="border-t">
+
+                        <td class="p-3 font-semibold text-gray-800" id="name-<%= cat.id %>">
+                            <%= cat.name %>
+                        </td>
+                        <td class="p-3 text-gray-600" id="slug-<%= cat.id %>">
+                            <%= cat.slug %>
+                        </td>
+                        <td class="p-3 text-gray-600" id="desc-<%= cat.id %>">
+                            <%= cat.description %>
+                        </td>
+
+                        <td class="p-3 flex gap-2">
+                            <button onclick="editCat(<%= cat.id %>)"
+                                class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md">
+                                Edit
+                            </button>
+
+                            <button onclick="deleteCat(<%= cat.id %>)"
+                                class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md">
+                                Delete
+                            </button>
+                        </td>
+
+                    </tr>
+                    <% }) %>
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+<!-- Inline Edit JS -->
+<script>
+    function editCat(id) {
+        const name = document.getElementById("name-" + id).innerText;
+        const slug = document.getElementById("slug-" + id).innerText;
+        const desc = document.getElementById("desc-" + id).innerText;
+
+        const row = document.getElementById("row-" + id);
+
+        row.innerHTML = `
+        <td class="p-3">
+          <input id="edit-name-${id}" value="${name}"
+            class="p-2 border rounded-md w-full" />
+        </td>
+
+        <td class="p-3">
+          <input id="edit-slug-${id}" value="${slug}"
+            class="p-2 border rounded-md w-full" />
+        </td>
+
+        <td class="p-3">
+          <input id="edit-desc-${id}" value="${desc}"
+            class="p-2 border rounded-md w-full" />
+        </td>
+
+        <td class="p-3 flex gap-2">
+          <button onclick="saveCat(${id})"
+            class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md">Save</button>
+
+          <button onclick="cancelEdit(${id}, '${name}', '${slug}', \`${desc.replace(/`/g, "\\`")}\`)"
+            class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded-md">Cancel</button>
+        </td>
+      `;
+    }
+
+    function cancelEdit(id, name, slug, desc) {
+        const row = document.getElementById("row-" + id);
+
+        row.innerHTML = `
+        <td class="p-3 font-semibold text-gray-800" id="name-${id}">${name}</td>
+        <td class="p-3 text-gray-600" id="slug-${id}">${slug}</td>
+        <td class="p-3 text-gray-600" id="desc-${id}">${desc}</td>
+
+        <td class="p-3 flex gap-2">
+          <button onclick="editCat(${id})"
+            class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md">Edit</button>
+
+          <button onclick="deleteCat(${id})"
+            class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md">Delete</button>
+        </td>
+      `;
+    }
+
+    async function saveCat(id) {
+        const name = document.getElementById("edit-name-" + id).value;
+        const slug = document.getElementById("edit-slug-" + id).value;
+        const description = document.getElementById("edit-desc-" + id).value;
+
+        const res = await fetch(`/admin/post_categories/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, slug, description })
+        });
+
+        const data = await res.json();
+
+        if (data.error) return alert(data.error);
+
+        location.reload();
+    }
+
+    async function deleteCat(id) {
+        if (!confirm("Delete this category?")) return;
+
+        const res = await fetch(`/admin/post_categories/${id}`, {
+            method: "DELETE"
+        });
+
+        location.reload();
+    }
+
+    // Create
+    const createForm = document.getElementById("createCatForm");
+    createForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(createForm);
+        const name = formData.get("name");
+        const slug = formData.get("slug");
+        const description = formData.get("description");
+
+        const res = await fetch("/admin/post_categories", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, slug, description })
+        });
+
+        location.reload();
+    });
+
+</script>
