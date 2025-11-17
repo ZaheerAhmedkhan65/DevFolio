@@ -1,0 +1,40 @@
+<!-- CREATE POST MODAL -->
+<div id="createPostModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50">
+    <div class="w-full h-full flex justify-center items-center">
+        <div class="bg-white w-full max-w-3xl h-[90vh] rounded-xl shadow-lg p-6 overflow-y-auto relative">
+
+            <!-- Close Button -->
+            <button onclick="closeCreatePostModal()" 
+                class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl">
+                &times;
+            </button>
+
+            <!-- Loaded Form -->
+            <div id="createPostContent" class="mt-8 text-center text-gray-500">
+                Loading form...
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    async function openCreatePostModal() {
+        const modal = document.getElementById("createPostModal");
+        const content = document.getElementById("createPostContent");
+
+        modal.classList.remove("hidden");
+        content.innerHTML = "Loading form...";
+
+        try {
+            const response = await fetch("/posts/create");
+            const html = await response.text();
+            content.innerHTML = html;
+        } catch (err) {
+            content.innerHTML = "<p class='text-red-600'>Failed to load form.</p>";
+        }
+    }
+
+    function closeCreatePostModal() {
+        document.getElementById("createPostModal").classList.add("hidden");
+    }
+</script>

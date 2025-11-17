@@ -12,6 +12,11 @@ class User {
         return rows[0];
     }
 
+    static async countAll() {
+        const [rows] = await db.query('SELECT COUNT(*) AS count FROM users');
+        return rows[0].count;
+    }
+
     static async findByEmail(email) {
         const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
         return rows[0];

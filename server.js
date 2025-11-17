@@ -15,6 +15,13 @@ const projectRoutes = require('./routes/projectRoutes');
 const skillRoutes = require('./routes/skillsRoutes');
 const profileSkillRoutes = require('./routes/profileSkillsRoutes');
 const socialLinksRoutes = require('./routes/socialLinksRoutes');
+const postsRoutes = require('./routes/postsRoutes');
+const postCategoriesRoutes = require('./routes/postCategoriesRoutes');
+const postTagsRoutes = require('./routes/postTagsRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+
+const Post = require('./models/Post');
+const User = require('./models/User');
 
 const app = express();
 
@@ -62,14 +69,20 @@ app.use('/projects', authenticate, projectRoutes);
 app.use('/skills', authenticate, skillRoutes);
 app.use('/profile-skills', authenticate, profileSkillRoutes);
 app.use('/social-links', authenticate, socialLinksRoutes);
+app.use('/posts', postsRoutes);
+app.use('/post-categories', postCategoriesRoutes);
+// app.use('/post-tags', postTagsRoutes);
 
 /* --------------------------- Admin Routes --------------------------- */
 // Example: Add admin route group here
-// app.use('/admin', authenticate, isAdmin, require('./routes/adminRoutes'));
+app.use('/admin', authenticate, isAdmin, adminRoutes);
+
 
 /* ----------------------------- Home Page ----------------------------- */
-app.get('/', (req, res) => {
-    res.render('index', { title: "DevFolio" });
+app.get('/', async (req, res) => {
+    const posts = await Post.list({ page: 1, perPage: 3, status: 'published' });
+    const suggestions = [];
+    res.render('public/index', { title: "DevFolio", posts, suggestions });
 });
 
 /* ------------------------------ 404 Page ------------------------------ */
