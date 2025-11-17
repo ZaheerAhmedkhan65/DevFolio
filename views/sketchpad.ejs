@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+  }
+
+  #sketchPad{
+    text-align: center;
+    visibility: hidden;
+  }
+  
+</style>
+
+<body>
+  <h2>Html canvas</h2>
+  <input type="text" id="inputField" placeholder="Type your name here" />
+  <div id="instructions">Please type your name and click Start</div>
+  <button id="advanceBtn">Start</button>
+  <div id="sketchPad"></div>
+  <script src="draw.js"></script>
+  <script src="SketchPad.js"></script>
+  <script>
+    const fs = require('fs');
+    let index = 0;
+    const labels = ["car", "fish", "house", "tree", "bicycle", "guitar", "pencil", "clock"];
+    const data = {
+      student: null,
+      session: new Date().getTime(),
+      drawings: {}
+    };
+    const sketchPadContainer = document.getElementById("sketchPad");
+    const advanceBtn = document.getElementById("advanceBtn");
+    const instructions = document.getElementById("instructions");
+    const student = document.getElementById("inputField");
+    advanceBtn.onclick = start;
+    const sketchPad = new SketchPad(sketchPadContainer);
+
+
+    function start() {
+      if (student.value == "") {
+        alert("Please type your name first!");
+        return;
+      }
+      data.student = student.value;
+      student.style.display = "none";
+      sketchPadContainer.style.visibility = "visible";
+      const label = labels[index];
+      instructions.innerHTML = `<span>Hi,<strong>${data.student}!</strong> Please draw a <strong>${label}!</strong></span>`;
+      advanceBtn.innerHTML = "Next";
+      advanceBtn.onclick = next;
+    }
+
+    function next() {
+      if (sketchPad.paths.length == 0) {
+        alert(`${data.student}, please draw a ${labels[index]} first!`);
+        return;
+      }
+      const label = labels[index];
+      data.drawings[label] = sketchPad.paths;
+      sketchPad.reset();
+      index++;
+      if (index < labels.length) {
+        const nextLabel = labels[index];
+        instructions.innerHTML = `<strong>${data.student} </strong>, please draw a <strong>${nextLabel}</strong>`;
+      } else {
+        sketchPadContainer.style.visibility = "hidden";
+        instructions.innerHTML = `Thank you! <strong> ${data.student}</strong> , for completing these drawings.<br>`;
+        advanceBtn.innerHTML = "Download Drawings";
+        advanceBtn.style.margin = "10px 0px 0px";
+        advanceBtn.onclick = () => saveDrawing(data);
+        save(data);
+      }
+    }
+
+
+    function save(data) {
+      const fileName = `./data/json/${data.student}_${data.session}.json`;
+      fs.writeFileSync(fileName, JSON.stringify(data));
+      showAlert(`Your drawings have been saved successfully as <strong>${fileName}</strong>`);
+    }
+
+
+    function saveDrawing(data) {
+      if (data) {
+        const fileName = `${data.session}.json`;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+        a.download = fileName;
+        a.click();
+      }
+    }
+
+
+    function showAlert(message) {
+      let alertBox = document.createElement("div");
+      alertBox.classList.add("alert");
+      alertBox.innerHTML = message;
+      document.body.appendChild(alertBox);
+      setTimeout(() => {
+        alertBox.remove();
+      }, 5000);
+    }
+  </script>
+</body>
+
+</html>
