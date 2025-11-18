@@ -53,7 +53,6 @@ class PostsController {
 
             const categories = await PostCategory.findAll();
             const tags = await PostTag.findAll();
-            console.log(categories, tags);
             res.render('public/posts/_editor', {
                 title: 'Create New Post',
                 categories,
@@ -97,7 +96,6 @@ class PostsController {
             const categories = await PostCategoryRelation.findCategoriesForPost(post.id);
             const tags = await PostTagRelation.findTagsForPost(post.id);
 
-            console.log(post, categories, tags);
             res.render('public/posts/show', {
                 title: post.title,
                 post,
@@ -119,7 +117,7 @@ class PostsController {
                 status = 'draft', is_featured = false, read_time = 5,
                 category_ids = [], tag_ids = []
             } = req.body;
-            console.log(req.body);
+            
             const slugBase = slugify(title);
             // ensure uniqueness by suffix if necessary
             let slug = slugBase;

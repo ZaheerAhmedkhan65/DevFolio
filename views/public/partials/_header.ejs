@@ -8,28 +8,86 @@
             </div>
             <div class="flex items-center space-x-6">
                 <% if(user){%>
-                    <div class="relative group">
-                        <button class="flex items-center space-x-2 text-gray-700">
+                    <div class="relative" id="user-menu-container">
+                        <button id="user-menu-button" class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors">
                             <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=32&h=32&q=80"
                                 alt="Profile" class="w-8 h-8 rounded-full">
                             <span><%= user.username %></span>
-                            <i class="fas fa-chevron-down text-xs"></i>
+                            <i class="fas fa-chevron-down text-xs transition-transform" id="chevron-icon"></i>
                         </button>
-                        <div
-                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 hidden group-hover:block">
-                            <a href="/profile">
-                                <div class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</div>
+                        <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 hidden border border-gray-100 z-50">
+                            <a href="/<%= user.username_slug%>" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                                <i class="fas fa-user w-4 mr-2"></i>Profile
                             </a>
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</a>
+                            <a href="/dashboard" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                                <i class="fas fa-tachometer-alt w-4 mr-2"></i>Dashboard
+                            </a>
+                            <a href="/settings" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                                <i class="fas fa-cog w-4 mr-2"></i>Settings
+                            </a>
+                            <div class="border-t my-1"></div>
+                            <a href="/auth/signout" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors">
+                                <i class="fas fa-sign-out-alt w-4 mr-2"></i>Signout
+                            </a>
                         </div>
                     </div>
                 <% } else { %>
-                    <a href="/auth/signin" class="text-gray-600 hover:text-blue-600">Sign In</a>
+                    <a href="/auth/signin" class="text-gray-600 hover:text-blue-600 transition-colors">Sign In</a>
                     <a href="/auth/create-account"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Create Account</a>
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Create Account</a>
                 <% } %>
             </div>
         </div>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+        const chevronIcon = document.getElementById('chevron-icon');
+        let dropdownTimeout;
+
+        if (userMenuButton && userDropdown) {
+            // Show dropdown
+            userMenuButton.addEventListener('mouseenter', function() {
+                clearTimeout(dropdownTimeout);
+                userDropdown.classList.remove('hidden');
+                chevronIcon.classList.add('rotate-180');
+            });
+
+            // Hide dropdown with delay
+            userMenuButton.addEventListener('mouseleave', function() {
+                dropdownTimeout = setTimeout(function() {
+                    if (!userDropdown.matches(':hover')) {
+                        userDropdown.classList.add('hidden');
+                        chevronIcon.classList.remove('rotate-180');
+                    }
+                }, 100);
+            });
+
+            // Keep dropdown open when hovering over it
+            userDropdown.addEventListener('mouseenter', function() {
+                clearTimeout(dropdownTimeout);
+                userDropdown.classList.remove('hidden');
+                chevronIcon.classList.add('rotate-180');
+            });
+
+            // Hide dropdown when leaving it
+            userDropdown.addEventListener('mouseleave', function() {
+                dropdownTimeout = setTimeout(function() {
+                    userDropdown.classList.add('hidden');
+                    chevronIcon.classList.remove('rotate-180');
+                }, 100);
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                    userDropdown.classList.add('hidden');
+                    chevronIcon.classList.remove('rotate-180');
+                }
+            });
+        }
+    });
+</script>

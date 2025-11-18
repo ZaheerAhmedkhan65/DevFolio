@@ -52,7 +52,7 @@ class Profile {
         const values = Object.values(filteredUpdates);
         values.push(id);
 
-        await db.query(`UPDATE profiles SET ${fields.join(', ')} WHERE id = ?`, values);
+        await db.query(`UPDATE profiles SET ${fields.join(', ')} WHERE user_id = ?`, values);
         return this.findById(id);
     }
 
