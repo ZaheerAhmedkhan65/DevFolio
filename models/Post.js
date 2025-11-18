@@ -64,62 +64,74 @@ class Post {
         await db.query('UPDATE posts SET view_count = view_count + 1 WHERE id = ?', [id]);
     }
 
-    static async list({
-        page = 1,
-        perPage = 10,
-        status = 'published',
-        userId = null,
-        categoryId = null,
-        tagId = null,
-        search = null
-    } = {}) {
-        const offset = (page - 1) * perPage;
-        let base = `SELECT p.* FROM posts p`;
-        const joins = [];
-        const where = [];
-        const params = [];
+static async list({
+    page = 1,
+    perPage = 10,
+    status = 'published',
+    userId = null,
+    categoryId = null,
+    tagId = null,
+    search = null
+} = {}) {
+    const offset = (page - 1) * perPage;
 
-        if (categoryId) {
-            joins.push('JOIN post_category_relations pc ON pc.post_id = p.id');
-            where.push('pc.category_id = ?');
-            params.push(categoryId);
-        }
+    let base = `
+        SELECT 
+            p.*,
+            pr.display_name,
+            pr.profile_picture_url,
+            u.username_slug
+        FROM posts p
+        LEFT JOIN profiles pr ON pr.user_id = p.user_id
+        LEFT JOIN users u ON u.id = p.user_id
+    `;
 
-        if (tagId) {
-            joins.push('JOIN post_tag_relations pt ON pt.post_id = p.id');
-            where.push('pt.tag_id = ?');
-            params.push(tagId);
-        }
+    const joins = [];
+    const where = [];
+    const params = [];
 
-        if (status) {
-            where.push('p.status = ?');
-            params.push(status);
-        }
-
-        if (userId) {
-            where.push('p.user_id = ?');
-            params.push(userId);
-        }
-
-        if (search) {
-            where.push('(p.title LIKE ? OR p.content LIKE ? OR p.excerpt LIKE ?)');
-            const q = `%${search}%`;
-            params.push(q, q, q);
-        }
-
-        const sql = [
-            base,
-            joins.length ? joins.join(' ') : '',
-            where.length ? `WHERE ${where.join(' AND ')}` : '',
-            'ORDER BY p.is_featured DESC, p.published_at DESC, p.created_at DESC',
-            'LIMIT ? OFFSET ?'
-        ].join(' ');
-
-        params.push(perPage, offset);
-
-        const [rows] = await db.query(sql, params);
-        return rows;
+    if (categoryId) {
+        joins.push('JOIN post_category_relations pc ON pc.post_id = p.id');
+        where.push('pc.category_id = ?');
+        params.push(categoryId);
     }
+
+    if (tagId) {
+        joins.push('JOIN post_tag_relations pt ON pt.post_id = p.id');
+        where.push('pt.tag_id = ?');
+        params.push(tagId);
+    }
+
+    if (status) {
+        where.push('p.status = ?');
+        params.push(status);
+    }
+
+    if (userId) {
+        where.push('p.user_id = ?');
+        params.push(userId);
+    }
+
+    if (search) {
+        where.push('(p.title LIKE ? OR p.content LIKE ? OR p.excerpt LIKE ?)');
+        const q = `%${search}%`;
+        params.push(q, q, q);
+    }
+
+    const sql = [
+        base,
+        joins.join(' '),
+        where.length ? `WHERE ${where.join(' AND ')}` : '',
+        'ORDER BY p.is_featured DESC, p.published_at DESC, p.created_at DESC',
+        'LIMIT ? OFFSET ?'
+    ].join(' ');
+
+    params.push(perPage, offset);
+
+    const [rows] = await db.query(sql, params);
+    return rows;
+}
+
 }
 
 module.exports = Post;

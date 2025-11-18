@@ -1,28 +1,217 @@
 
-<div class="container mx-auto py-10 max-w-4xl">
-    <h1 class="text-4xl font-bold mb-4"><%= post.title %></h1>
+    <div class="container mx-auto py-10 max-w-4xl px-4">
+        <!-- Post Header -->
+        <header class="mb-8">
+            <!-- Author Info -->
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                    HB
+                </div>
+                <div class="ml-4">
+                    <h2 class="font-semibold text-gray-800 text-lg">Hadil Ben Abdallah</h2>
+                    <div class="flex items-center text-gray-500 text-sm mt-1">
+                        <span><%= new Date(post.published_at).toDateString() %></span>
+                        <span class="mx-2">•</span>
+                        <span><%= post.read_time %> min read</span>
+                    </div>
+                </div>
+            </div>
 
-    <div class="flex items-center text-gray-500 text-sm mb-6">
-        <span>By <%= post.user_id %></span>
-        <span class="mx-2">•</span>
-        <span><%= new Date(post.published_at).toDateString() %></span>
-        <span class="mx-2">•</span>
-        <span><%= post.read_time %> min read</span>
+            <!-- Post Title -->
+            <h1 class="text-4xl font-bold text-gray-900 mb-6 leading-tight">
+                Every Sunday, I Refactor Old Code and It's the Smartest Habit I've Ever Built
+            </h1>
+
+            <!-- Engagement Stats -->
+            <div class="flex items-center text-gray-600 mb-6">
+                <div class="flex items-center mr-6">
+                    <i class="far fa-heart mr-2"></i>
+                    <span class="font-medium">101 reactions</span>
+                </div>
+                <div class="flex items-center mr-6">
+                    <i class="far fa-comment mr-2"></i>
+                    <span class="font-medium">29 comments</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="far fa-bookmark mr-2"></i>
+                    <span class="font-medium">Save</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Featured Image -->
+        <% if (post.featured_image_url) { %>
+            <div class="mb-8">
+                <img src="<%= post.featured_image_url %>" alt="Featured image for <%= post.title %>" class="w-full h-96 object-cover rounded-xl shadow-md">
+            </div>
+        <% } %>
+
+        <!-- Post Content -->
+        <article class="bg-white rounded-xl shadow-md p-8 mb-8">
+            <div class="prose prose-lg max-w-none">
+                <!-- This would be your dynamic post.content -->
+                <p class="text-xl text-gray-700 leading-relaxed mb-6">
+                    Refactoring old code might seem like a tedious task, but making it a regular habit has transformed my approach to software development. Every Sunday, I dedicate a few hours to revisiting and improving code I've written in the past.
+                </p>
+
+                <p class="text-gray-700 leading-relaxed mb-6">
+                    This practice has helped me identify patterns, eliminate technical debt, and apply new knowledge to old problems. The benefits extend beyond just cleaner code - it's made me a more thoughtful and efficient developer.
+                </p>
+
+                <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Why Sunday Works Best</h2>
+
+                <p class="text-gray-700 leading-relaxed mb-6">
+                    Sunday evenings provide the perfect mental space for reflection. The week's pressure is gone, and I can approach code review with fresh eyes and a calm mindset.
+                </p>
+
+                <blockquote class="border-l-4 border-blue-500 pl-6 py-2 my-6 bg-blue-50 rounded-r-lg">
+                    <p class="text-gray-700 italic text-lg">
+                        "The Sunday refactor has become my secret weapon for continuous improvement. It's where I turn good code into great code."
+                    </p>
+                </blockquote>
+
+                <p class="text-gray-700 leading-relaxed mb-6">
+                    Over time, this habit has significantly reduced bugs in my projects and made maintenance much more manageable. New team members can onboard faster when the codebase is clean and well-organized.
+                </p>
+
+                <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">My Refactoring Checklist</h2>
+
+                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                    <li>Remove duplicate code and create reusable functions</li>
+                    <li>Improve variable and function names for clarity</li>
+                    <li>Simplify complex conditional logic</li>
+                    <li>Update dependencies to latest stable versions</li>
+                    <li>Add or improve documentation</li>
+                    <li>Optimize database queries and API calls</li>
+                </ul>
+
+                <p class="text-gray-700 leading-relaxed">
+                    This weekly practice has not only improved my code quality but also made me a better developer overall. I highly recommend giving it a try!
+                </p>
+            </div>
+        </article>
+
+        <!-- Tags Section -->
+        <div class="mb-8">
+            <div class="flex flex-wrap gap-3">
+                <a href="/tags/webdev" class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors">
+                    #webdev
+                </a>
+                <a href="/tags/css" class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium hover:bg-green-200 transition-colors">
+                    #css
+                </a>
+                <a href="/tags/javascript" class="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors">
+                    #javascript
+                </a>
+                <a href="/tags/python" class="px-4 py-2 bg-red-100 text-red-800 rounded-full text-sm font-medium hover:bg-red-200 transition-colors">
+                    #python
+                </a>
+            </div>
+        </div>
+
+        <!-- Engagement Actions -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex space-x-4">
+                    <button class="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                        <i class="far fa-heart"></i>
+                        <span>Like</span>
+                    </button>
+                    <button class="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                        <i class="far fa-comment"></i>
+                        <span>Comment</span>
+                    </button>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="far fa-bookmark"></i>
+                    </button>
+                    <button class="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <section class="bg-white rounded-xl shadow-md p-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Comments (29)</h3>
+            
+            <!-- Comment 1 -->
+            <div class="border-b border-gray-200 pb-6 mb-6">
+                <div class="flex">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold mr-4">
+                        JD
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-gray-800">John Developer</h4>
+                            <span class="text-sm text-gray-500">2 days ago</span>
+                        </div>
+                        <p class="text-gray-700 mb-3">
+                            Great post! I've been thinking about implementing a similar habit. Do you have any specific metrics you track to measure the impact of your refactoring?
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <button class="flex items-center hover:text-blue-500 mr-4">
+                                <i class="far fa-thumbs-up mr-1"></i>
+                                <span>12</span>
+                            </button>
+                            <button class="flex items-center hover:text-blue-500 mr-4">
+                                <i class="far fa-thumbs-down mr-1"></i>
+                                <span>2</span>
+                            </button>
+                            <button class="text-gray-500 hover:text-gray-700">
+                                Reply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comment 2 -->
+            <div class="border-b border-gray-200 pb-6 mb-6">
+                <div class="flex">
+                    <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold mr-4">
+                        CS
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-gray-800">Code Samurai</h4>
+                            <span class="text-sm text-gray-500">3 days ago</span>
+                        </div>
+                        <p class="text-gray-700 mb-3">
+                            I've been doing this for years! It's amazing how much you learn by revisiting your old code with fresh eyes. The Sunday refactor session is now sacred time for me.
+                        </p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <button class="flex items-center hover:text-blue-500 mr-4">
+                                <i class="far fa-thumbs-up mr-1"></i>
+                                <span>24</span>
+                            </button>
+                            <button class="flex items-center hover:text-blue-500 mr-4">
+                                <i class="far fa-thumbs-down mr-1"></i>
+                                <span>1</span>
+                            </button>
+                            <button class="text-gray-500 hover:text-gray-700">
+                                Reply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Comment Form -->
+            <div class="mt-8">
+                <h4 class="font-semibold text-gray-800 mb-4">Add a comment</h4>
+                <textarea 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                    rows="4" 
+                    placeholder="Share your thoughts..."
+                ></textarea>
+                <div class="flex justify-end mt-4">
+                    <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        Post Comment
+                    </button>
+                </div>
+            </div>
+        </section>
     </div>
-
-    <% if (post.featured_image_url) { %>
-        <img src="<%= post.featured_image_url %>" class="w-full rounded-lg mb-6">
-    <% } %>
-
-    <div class="prose max-w-none">
-        <%- post.content %>
-    </div>
-
-    <div class="mt-8 flex gap-3">
-        <% tags.forEach(tag => { %>
-            <a class="px-3 py-1 bg-gray-200 text-sm rounded" href="/tags/<%= tag.slug %>">
-                #<%= tag.name %>
-            </a>
-        <% }) %>
-    </div>
-</div>

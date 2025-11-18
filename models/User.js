@@ -49,7 +49,7 @@ class User {
             `INSERT INTO users 
             (username, username_slug, email, password_hash, role, created_at, updated_at) 
             VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
-            [username, email, password_hash, role]
+            [username, username_slug, email, password_hash, role]
         );
 
         return this.findById(result.insertId);

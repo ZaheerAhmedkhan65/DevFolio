@@ -1,5 +1,5 @@
 <!-- Profile Header -->
-<section class="relative pb-16">
+<section class="relative">
 
     <!-- Top Banner -->
     <div class="w-full h-48 bg-black"></div>
@@ -10,42 +10,43 @@
 
             <!-- Profile Image (absolute center) -->
             <div class="absolute left-1/2 -top-16 transform -translate-x-1/2">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200&q=80"
+                <img src="<%= profile.profile_picture_url || '/images/default-profile.png' %>"
                     class="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg">
             </div>
 
             <!-- Follow + Dropdown -->
             <div class="absolute top-4 right-4 flex items-center space-x-2">
-                <%if(user.userId == userProfile.id){%>
-                    <a href="/settings" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Edit profile</a>
-                <%}else{%>
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                    Follow
-                </button>
-            
-                <!-- Dropdown Trigger -->
-                <div class="relative">
-                    <button id="menuBtn" class="text-gray-600 hover:text-black">
-                        <i class="fas fa-ellipsis-h text-xl"></i>
-                    </button>
-            
-                    <!-- Dropdown Menu -->
-                    <div id="dropdownMenu"
-                        class="hidden absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md border border-gray-200 py-2 z-50">
-            
-                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Message</a>
-                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Report</a>
-                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Block</a>
-                    </div>
-                </div>
-                <%}%>
+                <%if(user.userId==profile.id){%>
+                    <a href="/settings" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Edit
+                        profile</a>
+                    <%}else{%>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                            Follow
+                        </button>
+
+                        <!-- Dropdown Trigger -->
+                        <div class="relative">
+                            <button id="menuBtn" class="text-gray-600 hover:text-black">
+                                <i class="fas fa-ellipsis-h text-xl"></i>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div id="dropdownMenu"
+                                class="hidden absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md border border-gray-200 py-2 z-50">
+
+                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Message</a>
+                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Report</a>
+                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Block</a>
+                            </div>
+                        </div>
+                        <%}%>
             </div>
 
 
             <!-- Content -->
             <div class="mt-20 text-center">
                 <h1 class="text-3xl font-bold text-gray-900">
-                    <%= userProfile.username %>
+                    <%= profile.username %>
                 </h1>
                 <p class="text-gray-500 mt-1 mb-3">Full Stack Developer & UI/UX Enthusiast</p>
 
@@ -60,20 +61,21 @@
                 <div class="flex justify-center space-x-6 mt-6 text-gray-600">
                     <div class="flex items-center space-x-2">
                         <i class="fas fa-birthday-cake"></i>
-                        <span>Joined on <%= userProfile.created_at.toLocaleDateString() %></span>
+                        <span>Joined on <%= profile_user.created_at.toLocaleDateString() %></span>
                     </div>
 
                     <div class="flex items-center space-x-2">
                         <i class="fas fa-envelope"></i>
                         <span>
-                            <%= userProfile.email %>
+                            <%= profile_user.email %>
                         </span>
                     </div>
 
                     <div class="flex items-center space-x-3">
-                    <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-github text-lg"></i></a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-linkedin text-lg"></i></a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-twitter text-lg"></i></a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-github text-lg"></i></a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600"><i
+                                class="fab fa-linkedin text-lg"></i></a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-twitter text-lg"></i></a>
                     </div>
                 </div>
             </div>
@@ -81,94 +83,174 @@
         </div>
     </div>
 </section>
-
-<!-- Projects Section -->
-<section class="py-16 bg-gray-50">
-    <div class="max-w-6xl mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Featured Projects</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            <!-- Project Card 1 -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                    alt="Project" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-xl font-semibold text-gray-900">E-Commerce Platform</h3>
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Featured</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">A full-stack e-commerce solution built with Node.js and React</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">Node.js</span>
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">React</span>
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">MongoDB</span>
-                    </div>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center space-x-1">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>Live Demo</span>
-                        </a>
-                        <a href="#" class="text-gray-600 hover:text-gray-800 flex items-center space-x-1">
-                            <i class="fab fa-github"></i>
-                            <span>Code</span>
-                        </a>
-                    </div>
-                </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Sidebar -->
+        <aside class="lg:col-span-1 bg-white rounded-xl shadow-md p-6 space-y-4 h-fit">
+            <div class="w-full">
+                <a href="/posts">
+                    <i class="fas fa-file-alt w-5"></i>
+                    <%= posts.draft.length + posts.published.length %> posts created
+                </a>
             </div>
-
-            <!-- Project Card 2 -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                    alt="Project" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Task Management App</h3>
-                    <p class="text-gray-600 mb-4">A collaborative task management application with real-time updates</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">Vue.js</span>
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">Express</span>
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">Socket.io</span>
-                    </div>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center space-x-1">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>Live Demo</span>
-                        </a>
-                        <a href="#" class="text-gray-600 hover:text-gray-800 flex items-center space-x-1">
-                            <i class="fab fa-github"></i>
-                            <span>Code</span>
-                        </a>
-                    </div>
-                </div>
+            <div class="w-full">
+                <a href="/comments">
+                    <i class="fas fa-comments w-5"></i>
+                    128 comments made
+                </a>
             </div>
-
-            <!-- Project Card 3 -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                    alt="Project" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Weather Dashboard</h3>
-                    <p class="text-gray-600 mb-4">Real-time weather application with beautiful data visualizations</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">JavaScript</span>
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">Chart.js</span>
-                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">API</span>
-                    </div>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-blue-600 hover:text-blue-800 flex items-center space-x-1">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>Live Demo</span>
-                        </a>
-                        <a href="#" class="text-gray-600 hover:text-gray-800 flex items-center space-x-1">
-                            <i class="fab fa-github"></i>
-                            <span>Code</span>
-                        </a>
-                    </div>
+        </aside>
+        <!-- Main Content -->
+        <main class="lg:col-span-3 space-y-6">
+            <!-- User's Posts Section -->
+            <section class="rounded-xl mb-12">
+                  <!-- Navigation Tabs -->
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button 
+                        id="draft-btn"
+                        onclick="togglePosts('draft')"
+                        class="px-4 py-2 font-medium rounded-t-lg transition-colors mr-2 bg-blue-600 text-white"
+                    >
+                        <i class="far fa-edit mr-2"></i>
+                        Draft Posts
+                    </button>
+                    <button 
+                        id="published-btn"
+                        onclick="togglePosts('published')"
+                        class="px-4 py-2 font-medium rounded-t-lg transition-colors bg-gray-200 text-gray-700"
+                    >
+                        <i class="far fa-newspaper mr-2"></i>
+                        Published Posts
+                    </button>
                 </div>
-            </div>
-        </div>
+                <div id="draft-posts" class="space-y-4">
+                    <% posts.draft.forEach(post=> { %>
+                        <!-- Post Card -->
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                                <!-- Post Header -->
+                                <div class="p-6 border-b border-gray-200">
+                                    <div class="flex items-center mb-4">
+                                        <div
+                                            class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                            <a href="/<%= post.username_slug %>">
+                                                <img src="<%= post.profile_picture_url %>"
+                                                    alt="<%= post.display_name %>'s profile picture"
+                                                    class="w-10 h-10 rounded-full object-cover">
+                                            </a>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h2 class="font-semibold text-gray-800">
+                                                <%= post.display_name %>
+                                            </h2>
+                                            <p class="text-sm text-gray-500">
+                                                <%= post.created_at.toLocaleDateString() %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a href="/posts/<%= post.id %>">
+                                        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                                            <%= post.title %>
+                                        </h1>
+                                    </a>
+
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <span
+                                            class="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded">#webdev</span>
+                                        <span
+                                            class="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded">#css</span>
+                                        <span
+                                            class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-0.5 rounded">#javascript</span>
+                                        <span
+                                            class="bg-red-100 text-red-800 text-xs px-2.5 py-0.5 rounded">#python</span>
+                                    </div>
+
+                                    <div class="flex items-center text-gray-600 text-sm">
+                                        <div class="flex items-center mr-4">
+                                            <i class="far fa-heart mr-1"></i>
+                                            <span>101 reactions</span>
+                                        </div>
+                                        <div class="flex items-center mr-4">
+                                            <i class="far fa-comment mr-1"></i>
+                                            <span>29 comments</span>
+                                        </div>
+                                        <div>
+                                            <i class="far fa-clock mr-1"></i>
+                                            <span>
+                                                <%= post.read_time %> min read
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    <% }) %>
+                </div>
+                 <!-- Published Posts -->
+                <div id="published-posts" class="space-y-6 hidden">
+                     <% posts.published.forEach(post=> { %>
+                        <!-- Post Card -->
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                                <!-- Post Header -->
+                                <div class="p-6 border-b border-gray-200">
+                                    <div class="flex items-center mb-4">
+                                        <div
+                                            class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                            <a href="/<%= post.username_slug %>">
+                                                <img src="<%= post.profile_picture_url %>"
+                                                    alt="<%= post.display_name %>'s profile picture"
+                                                    class="w-10 h-10 rounded-full object-cover">
+                                            </a>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h2 class="font-semibold text-gray-800">
+                                                <%= post.display_name %>
+                                            </h2>
+                                            <p class="text-sm text-gray-500">
+                                                <%= post.created_at.toLocaleDateString() %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a href="/posts/<%= post.id %>">
+                                        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                                            <%= post.title %>
+                                        </h1>
+                                    </a>
+
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <span
+                                            class="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded">#webdev</span>
+                                        <span
+                                            class="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded">#css</span>
+                                        <span
+                                            class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-0.5 rounded">#javascript</span>
+                                        <span
+                                            class="bg-red-100 text-red-800 text-xs px-2.5 py-0.5 rounded">#python</span>
+                                    </div>
+
+                                    <div class="flex items-center text-gray-600 text-sm">
+                                        <div class="flex items-center mr-4">
+                                            <i class="far fa-heart mr-1"></i>
+                                            <span>101 reactions</span>
+                                        </div>
+                                        <div class="flex items-center mr-4">
+                                            <i class="far fa-comment mr-1"></i>
+                                            <span>29 comments</span>
+                                        </div>
+                                        <div>
+                                            <i class="far fa-clock mr-1"></i>
+                                            <span>
+                                                <%= post.read_time %> min read
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    <% }) %>
+                </div>
+            </section>
+        </main>
     </div>
-</section>
-
+</div>
+<!-- Scripts -->
 <script>
     const menuBtn = document.getElementById("menuBtn");
     const dropdownMenu = document.getElementById("dropdownMenu");
@@ -183,3 +265,34 @@
         dropdownMenu.classList.add("hidden");
     });
 </script>
+
+ <script>
+        // Simple JavaScript to toggle between draft and published posts
+        function togglePosts(type) {
+            // Hide all post sections
+            document.getElementById('draft-posts').classList.add('hidden');
+            document.getElementById('published-posts').classList.add('hidden');
+            
+            // Remove active state from all buttons
+            document.getElementById('draft-btn').classList.remove('bg-blue-600', 'text-white');
+            document.getElementById('draft-btn').classList.add('bg-gray-200', 'text-gray-700');
+            document.getElementById('published-btn').classList.remove('bg-blue-600', 'text-white');
+            document.getElementById('published-btn').classList.add('bg-gray-200', 'text-gray-700');
+            
+            // Show selected section and update button state
+            if (type === 'draft') {
+                document.getElementById('draft-posts').classList.remove('hidden');
+                document.getElementById('draft-btn').classList.remove('bg-gray-200', 'text-gray-700');
+                document.getElementById('draft-btn').classList.add('bg-blue-600', 'text-white');
+            } else {
+                document.getElementById('published-posts').classList.remove('hidden');
+                document.getElementById('published-btn').classList.remove('bg-gray-200', 'text-gray-700');
+                document.getElementById('published-btn').classList.add('bg-blue-600', 'text-white');
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            togglePosts('draft'); // Show draft posts by default
+        });
+    </script>
