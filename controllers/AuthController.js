@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 const sendEmail = require('../utils/emailService');
+const Profile = require('../models/Profile');
 
 class AuthController {
     static async signup(req, res) {
@@ -35,14 +36,15 @@ class AuthController {
                 });
             }
 
-            console.log(firstName, lastName, email, password, confirmPassword, terms);
-
             // Hash password
             const password_hash = await bcrypt.hash(password, 10);
+
+            const username_slug = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${crypto.randomBytes(2).toString('hex')}`;
 
             //Create user
             const newUser = await User.create({
                 username: `${firstName} ${lastName}`,
+                username_slug,
                 email,
                 password_hash,
                 role: 'user'
@@ -80,6 +82,7 @@ class AuthController {
                 {
                     userId: user.id,
                     username: user.username,
+                    username_slug: user.username_slug,
                     role: user.role,
                     email: user.email,
                 },
@@ -94,7 +97,22 @@ class AuthController {
                 sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             });
-
+            const profile = await Profile.findByUserId(user.id);
+            if (!profile) {
+                // Create profile
+                await Profile.create({
+                    user_id: user.id,
+                    display_name: user.username,
+                    title: '',
+                    bio: '',
+                    location: '',
+                    company: '',
+                    website_url: '',
+                    profile_picture_url: '',
+                    theme: 'default',
+                    is_public: true
+                });
+            }
             if (user.role === 'admin') {
                 return res.json({ redirect: '/admin/dashboard', status: 'success', message: 'Login successful!' });
             } else {
@@ -225,6 +243,7 @@ class AuthController {
     }
 
     static async signout(req, res) {
+        console.log('Signing out user');
         res.clearCookie('token');
         res.json({ success: true, message: 'Logged out successfully' });
     }

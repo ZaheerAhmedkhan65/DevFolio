@@ -1,0 +1,524 @@
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Profile Settings</h2>
+                    <nav class="space-y-2">
+                        <a href="#profile" class="flex items-center space-x-3 p-3 bg-blue-50 text-blue-700 rounded-xl font-medium transition-colors">
+                            <i class="fas fa-user w-5"></i>
+                            <span>Profile Details</span>
+                        </a>
+                        <a href="#skills" class="flex items-center space-x-3 p-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors">
+                            <i class="fas fa-star w-5"></i>
+                            <span>Skills</span>
+                        </a>
+                        <a href="#social" class="flex items-center space-x-3 p-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors">
+                            <i class="fas fa-share-alt w-5"></i>
+                            <span>Social Links</span>
+                        </a>
+                        <a href="#sections" class="flex items-center space-x-3 p-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors">
+                            <i class="fas fa-layer-group w-5"></i>
+                            <span>Profile Sections</span>
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="lg:col-span-3 space-y-6">
+                <!-- Profile Details -->
+                <section id="profile" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Profile Details</h2>
+                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse" title="Auto-saved"></div>
+                    </div>
+                    
+                    <form action="/settings" method="POST" enctype="multipart/form-data" class="space-y-6">
+                        <!-- Profile Picture -->
+                        <div class="flex items-center space-x-6">
+                            <div class="relative">
+                                <img id="profile-preview" src="<%= profile.profile_picture_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80' %>" 
+                                     alt="Profile" class="w-20 h-20 rounded-2xl object-cover border-2 border-gray-200">
+                                <label for="profile-picture" class="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full cursor-pointer hover:bg-blue-700 transition-colors">
+                                    <i class="fas fa-camera text-xs"></i>
+                                </label>
+                                <input type="file" id="profile-picture" name="profile_picture" accept="image/*" class="hidden" onchange="previewImage(this)">
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Profile Photo</h3>
+                                <p class="text-sm text-gray-500">JPG, PNG or GIF. Max 2MB.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Display Name *</label>
+                                <input type="text" name="display_name" value="<%= profile.display_name %>" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="Your full name" />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Professional Title</label>
+                                <input type="text" name="title" value="<%= profile.title %>"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="e.g., Full Stack Developer" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                            <textarea name="bio" rows="4" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none" 
+                                placeholder="Tell us about yourself, your experience, and what you're passionate about..."><%= profile.bio %></textarea>
+                            <div class="flex justify-between text-sm text-gray-500 mt-1">
+                                <span>Brief introduction about yourself</span>
+                                <span id="bio-counter">0/500</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                <input type="text" name="location" value="<%= profile.location %>"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="City, Country" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                                <input type="text" name="company" value="<%= profile.company %>"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="Current company" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                            <input type="url" name="website_url" value="<%= profile.website_url %>"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="https://yourwebsite.com" />
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Profile Visibility</label>
+                                <p class="text-sm text-gray-500">Make your profile visible to everyone</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="is_public" <%= profile.is_public ? 'checked' : '' %> class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex justify-end pt-4 border-t border-gray-200">
+                            <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Skills Section -->
+                <section id="skills" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Skills & Expertise</h2>
+
+                    <!-- Add Skill Form -->
+                    <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Add New Skill</h3>
+                        <form action="/profile/skills/update" method="POST" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Skill</label>
+                                    <select name="skill_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                                        <option value="">Select a skill...</option>
+                                        <% skills.forEach(skill => { %>
+                                            <option value="<%= skill.id %>"><%= skill.name %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Proficiency Level</label>
+                                    <select name="proficiency" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                        <option value="Expert">Expert</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium">
+                                <i class="fas fa-plus mr-2"></i>Add Skill
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Current Skills -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Skills</h3>
+                        <% if (profileSkills.length > 0) { %>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <% profileSkills.forEach(ps => { %>
+                                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-blue-300 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-code text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-900"><%= ps.skill_name %></h4>
+                                                <div class="flex items-center space-x-2">
+                                                    <div class="flex space-x-1">
+                                                        <% for(let i = 1; i <= 4; i++) { %>
+                                                            <div class="w-2 h-2 rounded-full <%= i <= getProficiencyLevel(ps.proficiency) ? 'bg-blue-600' : 'bg-gray-300' %>"></div>
+                                                        <% } %>
+                                                    </div>
+                                                    <span class="text-sm text-gray-500"><%= ps.proficiency %></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <form action="/profile/skills/delete/<%= ps.skill_id %>" method="POST" class="flex-shrink-0">
+                                            <button type="submit" class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors" onclick="return confirm('Remove this skill?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="text-center py-8">
+                                <i class="fas fa-star text-4xl text-gray-300 mb-4"></i>
+                                <p class="text-gray-500">No skills added yet. Start by adding your first skill!</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </section>
+
+                <!-- Social Links -->
+                <section id="social" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Social Links</h2>
+
+                    <!-- Add Social Link Form -->
+                    <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Add Social Link</h3>
+                        <form action="/profile/social/add" method="POST" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Platform</label>
+                                    <select name="platform_name" id="platform-select" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" onchange="updatePlatformIcon()">
+                                        <option value="">Select a platform...</option>
+                                        <option value="GitHub">GitHub</option>
+                                        <option value="LinkedIn">LinkedIn</option>
+                                        <option value="Twitter">Twitter</option>
+                                        <option value="Instagram">Instagram</option>
+                                        <option value="Facebook">Facebook</option>
+                                        <option value="YouTube">YouTube</option>
+                                        <option value="Twitch">Twitch</option>
+                                        <option value="Discord">Discord</option>
+                                        <option value="Stack Overflow">Stack Overflow</option>
+                                        <option value="Dev.to">Dev.to</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Dribbble">Dribbble</option>
+                                        <option value="Behance">Behance</option>
+                                        <option value="Portfolio">Portfolio</option>
+                                        <option value="Personal Website">Personal Website</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Platform Icon</label>
+                                    <div class="flex items-center space-x-3">
+                                        <div id="icon-preview" class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-link text-gray-400"></i>
+                                        </div>
+                                        <input type="text" name="platform_icon" id="platform-icon" readonly
+                                            class="flex-1 px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-500" placeholder="Auto-selected" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">URL</label>
+                                <input type="url" name="url" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="https://..." />
+                            </div>
+                            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium">
+                                <i class="fas fa-plus mr-2"></i>Add Link
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Current Social Links -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Social Links</h3>
+                        <% if (socialLinks.length > 0) { %>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <% socialLinks.forEach(link => { %>
+                                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-blue-300 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i class="<%= link.platform_icon || 'fas fa-link' %> text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-900"><%= link.platform_name %></h4>
+                                                <p class="text-sm text-gray-500 truncate max-w-xs"><%= link.url %></p>
+                                            </div>
+                                        </div>
+                                        <form action="/profile/social/delete/<%= link.id %>" method="POST" class="flex-shrink-0">
+                                            <button type="submit" class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors" onclick="return confirm('Remove this link?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="text-center py-8">
+                                <i class="fas fa-share-alt text-4xl text-gray-300 mb-4"></i>
+                                <p class="text-gray-500">No social links added yet. Connect your profiles!</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </section>
+
+                <!-- Profile Sections -->
+                <section id="sections" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Profile Sections</h2>
+                        <button onclick="openSectionModal()" class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors font-medium">
+                            <i class="fas fa-plus mr-2"></i>Add Section
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <% profileSections.forEach(section => { %>
+                            <div class="border border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-colors">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-<%= getSectionColor(section.section_type) %>-100 rounded-lg flex items-center justify-center">
+                                            <i class="<%= getSectionIcon(section.section_type) %> text-<%= getSectionColor(section.section_type) %>-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900"><%= section.title %></h3>
+                                            <p class="text-sm text-gray-500 capitalize"><%= section.section_type %></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button onclick="editSection(<%= section.id %>)" class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <form action="/profile/sections/delete/<%= section.id %>" method="POST" class="inline">
+                                            <button type="submit" class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors" onclick="return confirm('Delete this section?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                <% if (section.subtitle) { %>
+                                    <p class="text-gray-700 mb-2"><%= section.subtitle %></p>
+                                <% } %>
+                                
+                                <% if (section.description) { %>
+                                    <p class="text-gray-600 mb-3"><%= section.description %></p>
+                                <% } %>
+                                
+                                <% if (section.start_date) { %>
+                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                        <span><%= formatDate(section.start_date) %> - <%= section.is_current ? 'Present' : formatDate(section.end_date) %></span>
+                                        <% if (section.is_current) { %>
+                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Current</span>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+
+                    <% if (profileSections.length === 0) { %>
+                        <div class="text-center py-12">
+                            <i class="fas fa-layer-group text-4xl text-gray-300 mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">No sections added yet</h3>
+                            <p class="text-gray-500 mb-4">Add experience, education, or other sections to showcase your journey.</p>
+                            <button onclick="openSectionModal()" class="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-medium">
+                                <i class="fas fa-plus mr-2"></i>Create Your First Section
+                            </button>
+                        </div>
+                    <% } %>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- Section Modal -->
+<div id="section-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold" id="modal-title">Add Section</h3>
+                <button onclick="closeSectionModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6">
+            <form id="section-form" action="/profile/sections/add" method="POST">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Section Type</label>
+                        <select name="section_type" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                            <option value="experience">Work Experience</option>
+                            <option value="education">Education</option>
+                            <option value="certification">Certification</option>
+                            <option value="achievement">Achievement</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+                        <input type="text" name="title" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                        <input type="text" name="subtitle" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="e.g., Company name, Institution, etc.">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea name="description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                            <input type="date" name="start_date" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                            <input type="date" name="end_date" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" name="is_current" id="is-current" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <label for="is-current" class="text-sm font-medium text-gray-700">This is my current position/education</label>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" name="is_public" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <label class="text-sm font-medium text-gray-700">Make this section public</label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+                    <button type="button" onclick="closeSectionModal()" class="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium">Save Section</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Image preview function
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profile-preview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Platform icon mapping
+const platformIcons = {
+    'GitHub': 'fab fa-github',
+    'LinkedIn': 'fab fa-linkedin',
+    'Twitter': 'fab fa-twitter',
+    'Instagram': 'fab fa-instagram',
+    'Facebook': 'fab fa-facebook',
+    'YouTube': 'fab fa-youtube',
+    'Twitch': 'fab fa-twitch',
+    'Discord': 'fab fa-discord',
+    'Stack Overflow': 'fab fa-stack-overflow',
+    'Dev.to': 'fab fa-dev',
+    'Medium': 'fab fa-medium',
+    'Dribbble': 'fab fa-dribbble',
+    'Behance': 'fab fa-behance',
+    'Portfolio': 'fas fa-briefcase',
+    'Personal Website': 'fas fa-globe',
+    'Other': 'fas fa-link'
+};
+
+function updatePlatformIcon() {
+    const platformSelect = document.getElementById('platform-select');
+    const iconInput = document.getElementById('platform-icon');
+    const iconPreview = document.getElementById('icon-preview');
+    
+    const selectedPlatform = platformSelect.value;
+    const iconClass = platformIcons[selectedPlatform] || 'fas fa-link';
+    
+    iconInput.value = iconClass;
+    
+    // Update preview
+    iconPreview.innerHTML = `<i class="${iconClass} text-blue-600"></i>`;
+}
+
+// Section modal functions
+function openSectionModal() {
+    document.getElementById('section-modal').classList.remove('hidden');
+    document.getElementById('modal-title').textContent = 'Add Section';
+    document.getElementById('section-form').action = '/profile/sections/add';
+    document.getElementById('section-form').reset();
+}
+
+function closeSectionModal() {
+    document.getElementById('section-modal').classList.add('hidden');
+}
+
+function editSection(sectionId) {
+    // Implementation for editing sections
+    console.log('Edit section:', sectionId);
+    // You would typically fetch section data and populate the form here
+}
+
+// Bio character counter
+document.addEventListener('DOMContentLoaded', function() {
+    const bioTextarea = document.querySelector('textarea[name="bio"]');
+    const bioCounter = document.getElementById('bio-counter');
+    
+    if (bioTextarea && bioCounter) {
+        bioTextarea.addEventListener('input', function() {
+            bioCounter.textContent = `${this.value.length}/500`;
+        });
+        // Initialize counter
+        bioCounter.textContent = `${bioTextarea.value.length}/500`;
+    }
+});
+
+// Close modal when clicking outside
+document.getElementById('section-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeSectionModal();
+    }
+});
+</script>
+
+<style>
+/* Custom scrollbar for modal */
+#section-modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+#section-modal::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#section-modal::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+#section-modal::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+</style>

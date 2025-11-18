@@ -5,7 +5,6 @@ class PostTagsController {
     static async list(req, res) {
         try {
             const tags = await PostTag.findAll();
-            console.log(req.user);
             if(req.user.role=='admin'){
                 res.render('admin/posts/tags', { title: 'Post Tags', tags });
             }else{

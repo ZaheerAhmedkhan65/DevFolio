@@ -7,6 +7,16 @@ class User {
         return rows[0];
     }
 
+    static async findAll() {
+        const [rows] = await db.query('SELECT * FROM users ORDER BY username ASC');
+        return rows;
+    }
+
+    static async findByUsernameSlug(slug) {
+        const [rows] = await db.query('SELECT * FROM users WHERE username_slug = ?', [slug]);
+        return rows[0];
+    }
+
     static async findByUsername(username) {
         const [rows] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
         return rows[0];
@@ -30,14 +40,15 @@ class User {
     // CREATE USER according to table schema
     static async create({
         username,
+        username_slug,
         email,
         password_hash,
         role = 'user'
     }) {
         const [result] = await db.query(
             `INSERT INTO users 
-            (username, email, password_hash, role, created_at, updated_at) 
-            VALUES (?, ?, ?, ?, NOW(), NOW())`,
+            (username, username_slug, email, password_hash, role, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
             [username, email, password_hash, role]
         );
 
