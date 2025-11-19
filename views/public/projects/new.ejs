@@ -1,0 +1,326 @@
+
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Add New Project</h1>
+            <p class="text-lg text-gray-600">Showcase your work and share it with the developer community</p>
+        </div>
+
+        <!-- Project Form -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+            <form action="/projects/create" method="POST" enctype="multipart/form-data" class="space-y-8">
+                <!-- Basic Information Section -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fas fa-info-circle text-blue-600 mr-3"></i>
+                        Basic Information
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Project Title -->
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                                Project Title *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="title" 
+                                name="title" 
+                                required 
+                                maxlength="255"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                placeholder="Enter your project name"
+                            >
+                            <div class="flex justify-between text-sm text-gray-500 mt-1">
+                                <span>A catchy name for your project</span>
+                                <span id="title-counter">0/255</span>
+                            </div>
+                        </div>
+
+                        <!-- Project Description -->
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                                Project Description *
+                            </label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                rows="5" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
+                                placeholder="Describe your project, what it does, technologies used, challenges solved..."
+                            ></textarea>
+                            <div class="flex justify-between text-sm text-gray-500 mt-1">
+                                <span>Detailed description of your project</span>
+                                <span id="description-counter">0 characters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Section -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fas fa-image text-green-600 mr-3"></i>
+                        Project Media
+                    </h2>
+
+                    <!-- Project Image -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Project Image
+                            </label>
+                            <div class="flex flex-col md:flex-row gap-6 items-start">
+                                <!-- Image Preview -->
+                                <div class="flex-shrink-0">
+                                    <div id="project_image_preview" class="w-48 h-32 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
+                                        <div class="text-center">
+                                            <i class="fas fa-image text-gray-400 text-2xl mb-2"></i>
+                                            <p class="text-sm text-gray-500">No image selected</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Upload Controls -->
+                                <div class="flex-1 space-y-4">
+                                    <div>
+                                        <label for="project_image" class="cursor-pointer">
+                                            <div class="bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 transition-colors inline-flex items-center space-x-2">
+                                                <i class="fas fa-upload"></i>
+                                                <span>Upload Image</span>
+                                            </div>
+                                        </label>
+                                        <input 
+                                            type="file" 
+                                            id="project_image" 
+                                            name="project_image"
+                                            accept="image/*" 
+                                            class="hidden"
+                                            onchange="previewImage(this)"
+                                        >
+                                    </div>
+                                    <p class="text-sm text-gray-500">
+                                        Recommended: 800x450px JPG, PNG, or WebP. Max 5MB.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Links Section -->
+                <div class="border-b border-gray-200 pb-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fas fa-link text-purple-600 mr-3"></i>
+                        Project Links
+                    </h2>
+
+                    <div class="space-y-6">
+                        <!-- Live Demo URL -->
+                        <div>
+                            <label for="project_url" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-external-link-alt text-green-600 mr-2"></i>
+                                Live Demo URL
+                            </label>
+                            <input 
+                                type="url" 
+                                id="project_url" 
+                                name="project_url" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                placeholder="https://your-project-demo.com"
+                            >
+                            <p class="text-sm text-gray-500 mt-1">Link to your live project or demo</p>
+                        </div>
+
+                        <!-- Source Code URL -->
+                        <div>
+                            <label for="source_code_url" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fab fa-github text-gray-800 mr-2"></i>
+                                Source Code URL
+                            </label>
+                            <input 
+                                type="url" 
+                                id="source_code_url" 
+                                name="source_code_url" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                placeholder="https://github.com/username/repository"
+                            >
+                            <p class="text-sm text-gray-500 mt-1">Link to your GitHub repository or source code</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+                        <i class="fas fa-cog text-orange-600 mr-3"></i>
+                        Project Settings
+                    </h2>
+
+                    <div class="space-y-6">
+                        <!-- Featured Project -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-star text-yellow-600"></i>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Feature this Project</label>
+                                    <p class="text-sm text-gray-500">Show this project prominently on your profile</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    name="featured" 
+                                    value="true"
+                                    class="sr-only peer"
+                                >
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+
+                        <!-- Display Order -->
+                        <div>
+                            <label for="display_order" class="block text-sm font-medium text-gray-700 mb-2">
+                                Display Order
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <input 
+                                    type="number" 
+                                    id="display_order" 
+                                    name="display_order" 
+                                    value="0"
+                                    min="0"
+                                    max="100"
+                                    class="w-32 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                >
+                                <div>
+                                    <p class="text-sm font-medium text-gray-700">Position in your projects list</p>
+                                    <p class="text-sm text-gray-500">Lower numbers appear first (0 = highest priority)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200">
+                    <a href="/dashboard" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors text-center font-medium">
+                        Cancel
+                    </a>
+                    <button 
+                        type="submit" 
+                        class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium flex items-center justify-center space-x-2"
+                    >
+                        <i class="fas fa-plus"></i>
+                        <span>Create Project</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Quick Tips -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-6">
+            <h3 class="text-lg font-semibold text-blue-900 mb-3 flex items-center">
+                <i class="fas fa-lightbulb text-blue-600 mr-2"></i>
+                Tips for a Great Project
+            </h3>
+            <ul class="space-y-2 text-blue-800">
+                <li class="flex items-start space-x-2">
+                    <i class="fas fa-check text-blue-600 mt-1"></i>
+                    <span>Use a clear, high-quality screenshot or logo</span>
+                </li>
+                <li class="flex items-start space-x-2">
+                    <i class="fas fa-check text-blue-600 mt-1"></i>
+                    <span>Write a detailed description with technologies used</span>
+                </li>
+                <li class="flex items-start space-x-2">
+                    <i class="fas fa-check text-blue-600 mt-1"></i>
+                    <span>Include both live demo and source code links</span>
+                </li>
+                <li class="flex items-start space-x-2">
+                    <i class="fas fa-check text-blue-600 mt-1"></i>
+                    <span>Feature your best projects to highlight them</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Image preview functionality
+        function previewImage(input) {
+            const preview = document.getElementById('project_image_preview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-xl" alt="Project preview">`;
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            } else if (input.value) {
+                // Handle URL input
+                preview.innerHTML = `<img src="${input.value}" class="w-full h-full object-cover rounded-xl" alt="Project preview" onerror="this.style.display='none'">`;
+            }
+        }
+
+        // Character counters
+        document.addEventListener('DOMContentLoaded', function() {
+            // Title counter
+            const titleInput = document.getElementById('title');
+            const titleCounter = document.getElementById('title-counter');
+            
+            if (titleInput && titleCounter) {
+                titleInput.addEventListener('input', function() {
+                    titleCounter.textContent = `${this.value.length}/255`;
+                });
+            }
+
+            // Description counter
+            const descriptionInput = document.getElementById('description');
+            const descriptionCounter = document.getElementById('description-counter');
+            
+            if (descriptionInput && descriptionCounter) {
+                descriptionInput.addEventListener('input', function() {
+                    descriptionCounter.textContent = `${this.value.length} characters`;
+                });
+            }
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            
+            if (!title) {
+                e.preventDefault();
+                alert('Please enter a project title');
+                document.getElementById('title').focus();
+                return;
+            }
+            
+            if (!description) {
+                e.preventDefault();
+                alert('Please enter a project description');
+                document.getElementById('description').focus();
+                return;
+            }
+        });
+    </script>
+
+    <style>
+        /* Custom styling for file upload */
+        input[type="file"]::file-selector-button {
+            display: none;
+        }
+        
+        /* Smooth transitions */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>

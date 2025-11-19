@@ -6,7 +6,7 @@ const ProfileSkillsController = require('../controllers/ProfileSkillsController'
 router.get('/:profileId', ProfileSkillsController.getSkills);
 
 // Add a skill to profile
-router.post('/', ProfileSkillsController.addSkill);
+router.post('/add', ProfileSkillsController.addSkill);
 
 // Update skill mapping (proficiency/order)
 router.put('/:profile_id/:skill_id', ProfileSkillsController.updateSkill);

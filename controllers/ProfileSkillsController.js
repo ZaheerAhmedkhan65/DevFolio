@@ -1,5 +1,5 @@
 const ProfileSkill = require('../models/ProfileSkill');
-
+const Profile = require('../models/Profile');
 class ProfileSkillsController {
 
     static async getSkills(req, res) {
@@ -13,16 +13,17 @@ class ProfileSkillsController {
 
     static async addSkill(req, res) {
         try {
-            const { profile_id, skill_id, proficiency, display_order } = req.body;
+            const { skill_id, proficiency, display_order } = req.body;
+            const profile = await Profile.findByUserId(req.user.userId);
 
-            const entry = await ProfileSkill.addSkill({
-                profile_id,
+            await ProfileSkill.addSkill({
+                profile_id: profile.id,
                 skill_id,
-                proficiency,
-                display_order
+                proficiency: proficiency || 'Intermediate',
+                display_order: display_order || 0
             });
 
-            res.status(201).json(entry);
+            res.status(201).redirect('/settings');
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

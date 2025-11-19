@@ -73,7 +73,7 @@ app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 /* ----------------------- Protected User Routes ----------------------- */
 app.use('/profiles', authenticate, profileRoutes);
-app.use('/projects', authenticate, projectRoutes);
+app.use('/', authenticate, projectRoutes);
 app.use('/skills', authenticate, skillRoutes);
 app.use('/profile-skills', authenticate, profileSkillRoutes);
 app.use('/social-links', authenticate, socialLinksRoutes);

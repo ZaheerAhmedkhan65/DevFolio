@@ -7,6 +7,16 @@ const Post = require('../models/Post');
 const PostTag = require('../models/PostTag');
 const Skill = require('../models/Skill');
 
+function getProficiencyLevel(prof) {
+    switch (prof) {
+        case 'Beginner': return 1;
+        case 'Intermediate': return 2;
+        case 'Advanced': return 3;
+        case 'Expert': return 4;
+        default: return 1;
+    }
+}
+
 class UserController {
     static async list(req, res) {
         try {
@@ -36,11 +46,12 @@ class UserController {
 
             const profile = await Profile.findByUserId(user.id);
             if (!profile) return res.status(404).json({ message: 'User not found' });
-
             const drafPosts = await Post.list({ user_id: profile.id, status: 'draft' });
             const publishedPosts = await Post.list({ user_id: profile.id, status: 'published' });
             const posts = { draft: drafPosts, published: publishedPosts };
-            res.render('public/users/profile', { title: profile.display_name + "'s Profile", profile, posts, profile_user: user });
+            const profileSkills = await ProfileSkill.findByProfileId(profile.id);
+            const socialLinks = await SocialLink.findByProfileId(profile.id);
+            res.render('public/users/profile', { title: profile.display_name + "'s Profile", profile, posts, profile_user: user, profileSkills, socialLinks, getProficiencyLevel });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -82,7 +93,7 @@ class UserController {
             const skills = await Skill.findAll();
             const profileSections = await ProfileSection.findByProfileId(profile.id);
             const socialLinks = await SocialLink.findByProfileId(profile.id);
-            res.render('public/users/edit_profile', { title: profile.display_name + "'s Profile", profile, profileSkills, skills, socialLinks, profileSections });
+            res.render('public/users/edit_profile', { title: profile.display_name + "'s Profile", profile, profileSkills, skills, socialLinks, profileSections, getProficiencyLevel });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
