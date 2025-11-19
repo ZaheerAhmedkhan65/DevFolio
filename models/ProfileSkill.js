@@ -14,7 +14,7 @@ class ProfileSkill {
         return rows;
     }
 
-    static async addSkill(profile_id, skill_id, proficiency = 'Intermediate', display_order = 0) {
+    static async addSkill({profile_id, skill_id, proficiency = 'Intermediate', display_order = 0}) {
         await db.query(
             `INSERT INTO profile_skills (profile_id, skill_id, proficiency, display_order)
              VALUES (?, ?, ?, ?)`,

@@ -1,4 +1,5 @@
 const SocialLink = require('../models/SocialLink');
+const Profile = require('../models/Profile');
 
 class SocialLinksController {
 
@@ -23,8 +24,16 @@ class SocialLinksController {
 
     static async createLink(req, res) {
         try {
-            const link = await SocialLink.create(req.body);
-            res.status(201).json(link);
+            const { platform_name, platform_icon, url, display_order = 0 } = req.body;
+            const profile = await Profile.findByUserId(req.user.userId);
+            const link = await SocialLink.create({
+                profile_id: profile.id,
+                platform_name,
+                platform_icon,
+                url,
+                display_order
+            });
+            res.status(201).redirect('/settings');
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

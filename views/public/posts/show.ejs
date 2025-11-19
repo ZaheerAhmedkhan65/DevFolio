@@ -2,6 +2,13 @@
     <div class="container mx-auto py-10 max-w-4xl px-4">
         <!-- Post Header -->
         <header class="mb-8">
+            <!-- Featured Image -->
+            <% if (post.featured_image_url) { %>
+                <div class="rounded-t-lg overflow-hidden mb-8">
+                    <img src="<%= post.featured_image_url %>" alt="Featured image for <%= post.title %>" class="w-full h-96 object-cover">
+                </div>
+            <% } %>
+
             <!-- Author Info -->
             <div class="flex items-center mb-6">
                 <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
@@ -42,13 +49,6 @@
                 </div>
             </div>
         </header>
-
-        <!-- Featured Image -->
-        <% if (post.featured_image_url) { %>
-            <div class="mb-8">
-                <img src="<%= post.featured_image_url %>" alt="Featured image for <%= post.title %>" class="w-full h-96 object-cover rounded-xl shadow-md">
-            </div>
-        <% } %>
 
         <!-- Post Content -->
         <div class="prose prose-lg max-w-none">
