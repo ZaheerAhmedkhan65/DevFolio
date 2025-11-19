@@ -3,6 +3,7 @@ const Profile = require('../models/Profile');
 const ProfileSkill = require('../models/ProfileSkill');
 const ProfileSection = require('../models/ProfileSection');
 const SocialLink = require('../models/SocialLink');
+const Post = require('../models/Post');
 const Skill = require('../models/Skill');
 
 class UserController {
@@ -17,9 +18,16 @@ class UserController {
 
     static async get(req, res) {
         try {
-            const userProfile = await User.findByUsernameSlug(req.params.username_slug);
-            if (!userProfile) return res.status(404).json({ message: 'User not found' });
-            res.render('public/users/profile', { title: userProfile.username + "'s Profile", userProfile });
+            const user = await User.findByUsernameSlug(req.params.username_slug);
+            if (!user) return res.status(404).json({ message: 'User not found' });
+
+            const profile = await Profile.findByUserId(user.id);
+            if (!profile) return res.status(404).json({ message: 'User not found' });
+
+            const drafPosts = await Post.list({ user_id: profile.id, status: 'draft' });
+            const publishedPosts = await Post.list({ user_id: profile.id, status: 'published' });
+            const posts = { draft: drafPosts, published: publishedPosts };
+            res.render('public/users/profile', { title: profile.display_name + "'s Profile", profile, posts, profile_user: user });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }

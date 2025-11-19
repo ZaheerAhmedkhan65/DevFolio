@@ -36,38 +36,64 @@
 
                     <div class="space-y-6">
                         <% posts.forEach(post=> { %>
-                            <article class="bg-white shadow rounded-xl p-5 hover:shadow-md transition shadow-sm">
-
-                                <!-- Featured Image -->
-                                <% if (post.featured_image_url) { %>
-                                    <img src="<%= post.featured_image_url %>"
-                                        class="rounded-lg mb-3 w-full h-48 object-cover" />
-                                    <% } %>
-
-                                        <h2 class="text-xl font-semibold">
-                                            <a href="/posts/<%= post.id %>" class="hover:text-blue-600">
-                                                <%= post.title %>
+                            <!-- Post Card -->
+                            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                                <!-- Post Header -->
+                                <div class="p-6 border-b border-gray-200">
+                                    <div class="flex items-center mb-4">
+                                        <div
+                                            class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                            <a href="/<%= post.username_slug %>">
+                                                <img src="<%= post.profile_picture_url %>"
+                                                    alt="<%= post.display_name %>'s profile picture"
+                                                    class="w-10 h-10 rounded-full object-cover">
                                             </a>
-                                        </h2>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h2 class="font-semibold text-gray-800">
+                                                <%= post.display_name %>
+                                            </h2>
+                                            <p class="text-sm text-gray-500">
+                                                <%= post.created_at.toLocaleDateString() %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a href="/posts/<%= post.id %>">
+                                        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                                            <%= post.title %>
+                                        </h1>
+                                    </a>
 
-                                        <p class="text-gray-600 text-sm mt-1">
-                                            By <strong>
-                                                <%= post.author_name %>
-                                            </strong> ·
-                                            <%= new Date(post.published_at || post.created_at).toLocaleDateString() %> ·
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <span
+                                            class="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded">#webdev</span>
+                                        <span
+                                            class="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded">#css</span>
+                                        <span
+                                            class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-0.5 rounded">#javascript</span>
+                                        <span
+                                            class="bg-red-100 text-red-800 text-xs px-2.5 py-0.5 rounded">#python</span>
+                                    </div>
+
+                                    <div class="flex items-center text-gray-600 text-sm">
+                                        <div class="flex items-center mr-4">
+                                            <i class="far fa-heart mr-1"></i>
+                                            <span>101 reactions</span>
+                                        </div>
+                                        <div class="flex items-center mr-4">
+                                            <i class="far fa-comment mr-1"></i>
+                                            <span>29 comments</span>
+                                        </div>
+                                        <div>
+                                            <i class="far fa-clock mr-1"></i>
+                                            <span>
                                                 <%= post.read_time %> min read
-                                        </p>
-
-                                        <p class="text-gray-700 mt-3">
-                                            <%= post.excerpt %>
-                                        </p>
-
-                                        <a href="/posts/<%= post.id %>"
-                                            class="inline-block mt-3 text-blue-600 hover:underline">
-                                            Read more →
-                                        </a>
-                            </article>
-                            <% }) %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
                     </div>
         </main>
 
