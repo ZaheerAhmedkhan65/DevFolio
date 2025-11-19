@@ -1,6 +1,5 @@
 # DevFolio
 
-
 users
   ├── profiles (1:1)
   ├── projects (1:N)

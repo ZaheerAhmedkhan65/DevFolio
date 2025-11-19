@@ -28,9 +28,19 @@ class User {
     }
 
     static async findByEmail(email) {
-        const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [rows] = await db.query(`
+        SELECT 
+            u.*,
+            pr.profile_picture_url,
+            pr.display_name
+        FROM users u
+        LEFT JOIN profiles pr ON pr.user_id = u.id
+        WHERE u.email = ?
+    `, [email]);
+
         return rows[0];
     }
+
 
     // Instead of deleting, deactivate user
     static async deleteUser(id) {

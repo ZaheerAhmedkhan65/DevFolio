@@ -5,3 +5,14 @@
         <p>&copy; 2024 DevFolio. Built with passion by developers for developers.</p>
     </div>
 </footer>
+<script>
+    const postMenuTriggers = document.querySelectorAll(".post-menu-trigger");
+    
+    postMenuTriggers.forEach((trigger) => {
+        trigger.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const menuBody = trigger.nextElementSibling;
+            menuBody.classList.toggle("hidden");
+        });
+    })
+</script>

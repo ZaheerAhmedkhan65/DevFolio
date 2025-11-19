@@ -23,14 +23,20 @@ const tempStorage = multer.diskStorage({
 const upload = multer({
     storage: tempStorage,
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit for images
+    fileFilter: (req, file, cb) => {
+        const allowed = /jpg|jpeg|png|gif|webp/;
+
+        const ext = path.extname(file.originalname).toLowerCase();
+        const mime = file.mimetype.toLowerCase();
+
+        if (allowed.test(ext) && allowed.test(mime)) {
+            cb(null, true);
+        } else {
+            cb(new Error("Only JPG, JPEG, PNG, GIF, WEBP images are allowed"));
+        }
+    }
 });
 
-// File type filter
-const imageFilter = (req, file, cb) => {
-    const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Only image files (JPEG, PNG, GIF, WEBP) are allowed!'), false);
-};
 
 // Middlewares
 const uploadPostImage = upload.single('post_featured_image');

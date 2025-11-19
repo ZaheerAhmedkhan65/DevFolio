@@ -51,7 +51,7 @@ class AuthController {
             });
 
             return res.json({
-                redirect: '/auth/login',
+                redirect: '/auth/signin',
                 status: 'success',
                 message: 'Account created successfully!'
             });
@@ -68,13 +68,13 @@ class AuthController {
         try {
             const user = await User.findByEmail(email);
             if (!user) {
-                return res.json({ redirect: '/auth/login', status: 'error', message: 'Invalid email or password!' });
+                return res.json({ redirect: '/auth/signin', status: 'error', message: 'Invalid email or password!' });
             }
 
             // Compare passwords
             const isPasswordValid = await bcrypt.compare(password, user.password_hash || '');
             if (!isPasswordValid) {
-                return res.json({ redirect: '/auth/login', status: 'error', message: 'Invalid email or password!' });
+                return res.json({ redirect: '/auth/signin', status: 'error', message: 'Invalid email or password!' });
             }
 
             // Generate JWT
@@ -83,6 +83,7 @@ class AuthController {
                     userId: user.id,
                     username: user.username,
                     username_slug: user.username_slug,
+                    profile_picture: user.profile_picture_url,
                     role: user.role,
                     email: user.email,
                 },
@@ -114,14 +115,14 @@ class AuthController {
                 });
             }
             if (user.role === 'admin') {
-                return res.json({ redirect: '/admin/dashboard', status: 'success', message: 'Login successful!' });
+                return res.json({ redirect: '/admin/dashboard', status: 'success', message: 'signin successful!' });
             } else {
-                return res.json({ redirect: '/', status: 'success', message: 'Login successful!' });
+                return res.json({ redirect: '/', status: 'success', message: 'signin successful!' });
             }
 
         } catch (error) {
-            console.error('Login error:', error);
-            return res.redirect('/auth/login');
+            console.error('signin error:', error);
+            return res.redirect('/auth/signin');
         }
     }
 
@@ -192,7 +193,7 @@ class AuthController {
             await User.updatePassword(user.id, hashedPassword);
 
             return res.json({
-                redirect: '/auth/login',
+                redirect: '/auth/signin',
                 status: 'success',
                 message: 'Password reset successfully!'
             });
@@ -243,7 +244,6 @@ class AuthController {
     }
 
     static async signout(req, res) {
-        console.log('Signing out user');
         res.clearCookie('token');
         res.json({ success: true, message: 'Logged out successfully' });
     }

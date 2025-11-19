@@ -4,13 +4,26 @@ const ProfileSkill = require('../models/ProfileSkill');
 const ProfileSection = require('../models/ProfileSection');
 const SocialLink = require('../models/SocialLink');
 const Post = require('../models/Post');
+const PostTag = require('../models/PostTag');
 const Skill = require('../models/Skill');
 
 class UserController {
     static async list(req, res) {
         try {
-            const users = await User.findAll();
+            const users = await User.findAll();``
             res.json(users);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    static async dashboard(req, res) {
+        try {
+            const profile = await Profile.findByUserId(req.user.userId);
+            const drafPosts = await Post.list({ user_id: profile.id, status: 'draft' });
+            const publishedPosts = await Post.list({ user_id: profile.id, status: 'published' });
+            const posts = { draft: drafPosts, published: publishedPosts };
+            res.render('public/users/dashboard', { title: profile.display_name + "'s Dashboard", profile, posts });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }

@@ -11,13 +11,6 @@
                     <a href="/" class="block px-3 py-2 rounded-md hover:bg-gray-100">Home</a>
                 </li>
                 <li>
-                    <button onclick="openCreatePostModal()"
-                        class="block px-3 py-2 rounded-md hover:bg-gray-100 w-full text-left">
-                        Create Post
-                    </button>
-
-                </li>
-                <li>
                     <a href="/profiles" class="block px-3 py-2 rounded-md hover:bg-gray-100">Developers</a>
                 </li>
                 <li>
@@ -29,72 +22,86 @@
         <!-- CENTER FEED -->
         <main class="col-span-1 lg:col-span-7">
             <h1 class="text-2xl font-bold mb-4">Recent Posts</h1>
-
             <% if (posts.length===0) { %>
                 <p class="text-gray-500">No posts yet.</p>
-                <% } %>
-
-                    <div class="space-y-6">
-                        <% posts.forEach(post=> { %>
-                            <!-- Post Card -->
-                            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                                <!-- Post Header -->
-                                <div class="p-6 border-b border-gray-200">
-                                    <div class="flex items-center mb-4">
-                                        <div
-                                            class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                                            <a href="/<%= post.username_slug %>">
-                                                <img src="<%= post.profile_picture_url %>"
-                                                    alt="<%= post.display_name %>'s profile picture"
-                                                    class="w-10 h-10 rounded-full object-cover">
-                                            </a>
-                                        </div>
-                                        <div class="ml-3">
-                                            <h2 class="font-semibold text-gray-800">
-                                                <%= post.display_name %>
-                                            </h2>
-                                            <p class="text-sm text-gray-500">
-                                                <%= post.created_at.toLocaleDateString() %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <a href="/posts/<%= post.id %>">
-                                        <h1 class="text-4xl font-bold text-gray-900 mb-4">
-                                            <%= post.title %>
-                                        </h1>
+            <% } %>
+            <div class="space-y-6">
+                <% posts.forEach(post=> { %>
+                    <!-- Post Card -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <!-- Post Header -->
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between">
+                            <div class="flex items-center mb-4">
+                                <div
+                                    class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                    <a href="/<%= post.username_slug %>">
+                                        <img src="<%= post.profile_picture_url %>"
+                                            alt="<%= post.display_name %>'s profile picture"
+                                            class="w-10 h-10 rounded-full object-cover">
                                     </a>
-
-                                    <div class="flex flex-wrap gap-2 mb-4">
-                                        <span
-                                            class="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded">#webdev</span>
-                                        <span
-                                            class="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded">#css</span>
-                                        <span
-                                            class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-0.5 rounded">#javascript</span>
-                                        <span
-                                            class="bg-red-100 text-red-800 text-xs px-2.5 py-0.5 rounded">#python</span>
-                                    </div>
-
-                                    <div class="flex items-center text-gray-600 text-sm">
-                                        <div class="flex items-center mr-4">
-                                            <i class="far fa-heart mr-1"></i>
-                                            <span>101 reactions</span>
-                                        </div>
-                                        <div class="flex items-center mr-4">
-                                            <i class="far fa-comment mr-1"></i>
-                                            <span>29 comments</span>
-                                        </div>
-                                        <div>
-                                            <i class="far fa-clock mr-1"></i>
-                                            <span>
-                                                <%= post.read_time %> min read
-                                            </span>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <h2 class="font-semibold text-gray-800">
+                                        <%= post.display_name %>
+                                    </h2>
+                                    <p class="text-sm text-gray-500">
+                                        <%= post.created_at.toLocaleDateString() %>
+                                    </p>
                                 </div>
                             </div>
-                        <% }) %>
+                            <!-- Dropdown Trigger -->
+                            <div class="relative">
+                                <button class="post-menu-trigger text-gray-600 hover:text-black">
+                                    <i class="fas fa-ellipsis-h text-xl"></i>
+                                </button>
+                            
+                                    <!-- Dropdown Menu -->
+                                    <div class="post-menu-body hidden absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md border border-gray-200 py-2 z-50">
+                                        <% if(user && user.userId==profile.user_id){%>
+                                            <button onclick="openEditPostModal(<%= post.id %>)" class="block px-3 py-2 rounded-md hover:bg-gray-100 w-full text-left">
+                                              Edit post
+                                            </button>
+                                            <form action="/posts/<%= post.id %>/delete">
+                                                <button type="submit" class="block px-3 py-2 rounded-md hover:bg-gray-100 w-full text-left">
+                                                  Delete post
+                                            </button>
+                                        </form>
+                                    <%}%>
+                                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Share</a>
+                                </div>
+                            </div>
+                            </div>
+                            <a href="/posts/<%= post.id %>">
+                                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                                    <%= post.title %>
+                                </h1>
+                            </a>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                            <%post.tags.forEach(tag=>{%>
+                                <span class="bg-gray-100 text-gray-800 text-xs px-2.5 py-0.5 rounded">#<%=tag%></span>
+                            <%})%>
+                            </div>
+                            <div class="flex items-center text-gray-600 text-sm">
+                                <div class="flex items-center mr-4">
+                                    <i class="far fa-heart mr-1"></i>
+                                    <span>101 reactions</span>
+                                </div>
+                                <div class="flex items-center mr-4">
+                                    <i class="far fa-comment mr-1"></i>
+                                    <span>29 comments</span>
+                                </div>
+                                <div>
+                                    <i class="far fa-clock mr-1"></i>
+                                    <span>
+                                        <%= post.read_time %> min read
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                <% }) %>
+            </div>
         </main>
 
         <!-- RIGHT SIDEBAR -->

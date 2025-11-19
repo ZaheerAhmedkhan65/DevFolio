@@ -1,22 +1,43 @@
 <!-- CREATE POST MODAL -->
 <div id="createPostModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50">
     <div class="w-full h-full flex justify-center items-center">
-        <div class="bg-white w-full max-w-3xl h-[90vh] rounded-xl shadow-lg p-6 overflow-y-auto relative">
+        <div class="bg-white w-full h-[99vh] rounded-xl shadow-lg p-6 overflow-y-auto relative">
 
             <!-- Close Button -->
-            <button onclick="closeCreatePostModal()" 
+            <button onclick="closeCreatePostModal()"
                 class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl">
                 &times;
             </button>
 
             <!-- Loaded Form -->
-            <div id="createPostContent" class="mt-8 text-center text-gray-500">
+            <div id="createPostContent" class="mt-8 text-gray-500">
                 Loading form...
             </div>
 
         </div>
     </div>
 </div>
+
+<!-- EDIT POST MODAL -->
+<div id="editPostModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50">
+    <div class="w-full h-full flex justify-center items-center">
+        <div class="bg-white w-full max-w-3xl h-[90vh] rounded-xl shadow-lg p-6 overflow-y-auto relative">
+
+            <!-- Close Button -->
+            <button onclick="closeEditPostModal()"
+                class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl">
+                &times;
+            </button>
+
+            <!-- Loaded Form -->
+            <div id="editPostContent" class="mt-8 text-gray-500">
+                Loading form...
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <script>
     async function openCreatePostModal() {
         const modal = document.getElementById("createPostModal");
@@ -29,12 +50,254 @@
             const response = await fetch("/posts/create");
             const html = await response.text();
             content.innerHTML = html;
+            initializeEditor();
+            setupTagSelector();
+            // IMPORTANT: Reinitialize Trix for dynamically added content
+            if (window.Trix) {
+                document.querySelectorAll("trix-editor").forEach((editor) => {
+                    editor.editor.loadHTML(editor.innerHTML);
+                });
+            }
         } catch (err) {
             content.innerHTML = "<p class='text-red-600'>Failed to load form.</p>";
         }
     }
 
+    async function openEditPostModal(postId) {
+        const modal = document.getElementById("editPostModal");
+        const content = document.getElementById("editPostContent");
+
+        modal.classList.remove("hidden");
+        content.innerHTML = "Loading form...";
+
+        try {
+            const response = await fetch(`/posts/${postId}/edit`);
+            const html = await response.text();
+            content.innerHTML = html;
+            initializeEditor();
+            // re-init tag selector
+            setupTagSelector();
+            // IMPORTANT: Reinitialize Trix for dynamically added content
+            if (window.Trix) {
+                document.querySelectorAll("trix-editor").forEach((editor) => {
+                    editor.editor.loadHTML(editor.innerHTML);
+                });
+            }
+        } catch (err) {
+            content.innerHTML = "<p class='text-red-600'>Failed to load form.</p>";
+        }
+    }
+
+    function closeEditPostModal() {
+        document.getElementById("editPostModal").classList.add("hidden");
+    }
+
     function closeCreatePostModal() {
         document.getElementById("createPostModal").classList.add("hidden");
     }
+</script>
+
+
+<script>
+    function setupTagSelector() {
+        const tagsInput = document.getElementById("tagsInputTop");
+        const suggestionsBox = document.getElementById("tagSuggestions");
+        const selectedTagsContainer = document.getElementById("selectedTagsContainer");
+        const hiddenSelect = document.getElementById("tag_ids");
+
+        if (!tagsInput || !hiddenSelect) return; // important for modal loads
+
+        // Build tag list from backend <option>
+        const allTags = [...hiddenSelect.options].map(o => ({
+            id: o.value,
+            name: o.textContent.trim()
+        }));
+
+        let selected = [];
+
+        // Render selected badges
+        function renderSelected() {
+            selectedTagsContainer.innerHTML = "";
+
+            selected.forEach(tag => {
+                const badge = document.createElement("div");
+                badge.className = "tag-badge";
+                badge.innerHTML = `
+        ${tag.name}
+        <button data-id="${tag.id}">&times;</button>
+      `;
+                selectedTagsContainer.appendChild(badge);
+            });
+
+            // update hidden <select> → store comma-separated IDs
+            hiddenSelect.value = selected.map(t => t.id).join(",");
+
+            // Disable input if max reached
+            tagsInput.disabled = selected.length >= 4;
+        }
+
+        // Handle input typing
+        tagsInput.addEventListener("input", () => {
+            const q = tagsInput.value.toLowerCase().trim();
+
+            if (!q) {
+                suggestionsBox.classList.add("hidden");
+                return;
+            }
+
+            const matches = allTags.filter(t =>
+                t.name.toLowerCase().includes(q) &&
+                !selected.some(s => s.id === t.id)
+            );
+
+            if (!matches.length) {
+                suggestionsBox.classList.add("hidden");
+                return;
+            }
+
+            suggestionsBox.innerHTML = "";
+            matches.forEach(t => {
+                const item = document.createElement("div");
+                item.textContent = t.name;
+                item.dataset.id = t.id;
+
+                item.addEventListener("click", () => {
+                    if (selected.length < 4) {
+                        selected.push(t);
+                        renderSelected();
+                    }
+                    tagsInput.value = "";
+                    suggestionsBox.classList.add("hidden");
+                });
+
+                suggestionsBox.appendChild(item);
+            });
+
+            suggestionsBox.classList.remove("hidden");
+        });
+
+        // Remove badge
+        selectedTagsContainer.addEventListener("click", (e) => {
+            if (e.target.tagName === "BUTTON") {
+                const id = e.target.dataset.id;
+                selected = selected.filter(t => t.id !== id);
+                renderSelected();
+            }
+        });
+
+        // Hide suggestions on outside click
+        document.addEventListener("click", (e) => {
+            if (!suggestionsBox.contains(e.target) && e.target !== tagsInput) {
+                suggestionsBox.classList.add("hidden");
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function initializeEditor() {
+
+        const postForm = document.getElementById("postForm");
+        // ---------- HELPERS ----------
+        const wordsToMinutes = (wordCount) => {
+            const wordsPerMinute = 200; // adjustable
+            return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+        };
+
+        // Call this to update read_time & display
+        function updateReadTimeFromHTML(html) {
+            // strip tags & count words
+            const text = (new DOMParser()).parseFromString(html, 'text/html').body.textContent || "";
+            const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+            const minutes = wordsToMinutes(wordCount);
+            document.getElementById('readTime').value = minutes;
+            document.getElementById('readTimeDisplay').value = minutes + " min";
+        }
+
+        function initEditorBindings() {
+            const trixEditor = document.getElementById('trixEditor');
+            const hiddenContent = document.getElementById('content');
+
+            // initialize read time from initial content
+            updateReadTimeFromHTML(hiddenContent.value || '');
+
+            // Update read_time and excerpt when content changes
+            document.addEventListener('trix-change', (e) => {
+                // trix-editor keeps hidden input updated automatically, so read that
+                const html = hiddenContent.value || '';
+                updateReadTimeFromHTML(html);
+            });
+
+            // If the Trix editor didn't load content text into the DOM on injection,
+            // we make sure it loads initial content.
+            if (window.Trix && trixEditor) {
+                // load current content if any
+                try {
+                    const cur = hiddenContent.value || '';
+                    // use Trix Editor API:
+                    trixEditor.editor.loadHTML(cur);
+                } catch (err) {
+                    // ignore if not available
+                }
+            }
+        }
+
+        (function attachCoverUpload() {
+            const uploadInput = document.getElementById('cover-upload');
+            const previewContainer = document.getElementById('coverPreviewContainer');
+
+            if (!uploadInput) return;
+
+            uploadInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = () => {
+                    previewContainer.innerHTML = `<img id="coverPreview" src="${reader.result}" alt="Cover">`;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            document.querySelectorAll('label[for="cover-upload"]').forEach(lbl => {
+                lbl.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    uploadInput.click();
+                });
+            });
+        })();
+
+
+        postForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(postForm);
+
+            const res = await fetch(postForm.action, {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                location.reload(); // reload page
+            } else {
+                alert("Failed to save post");
+            }
+        });
+
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                initEditorBindings();
+                setupTagSelector();
+            });
+        } else {
+            initEditorBindings();
+            setupTagSelector();
+        }
+    }
+
 </script>

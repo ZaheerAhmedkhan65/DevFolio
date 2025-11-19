@@ -18,12 +18,19 @@ function slugify(text) {
         .slice(0, 300);
 }
 
-function makeExcerpt(content, length = 240) {
-    if (!content) return '';
-    const plain = content.replace(/<[^>]+>/g, ''); // strip HTML tags
-    if (plain.length <= length) return plain;
-    return plain.slice(0, length).trim().replace(/\s+\S*$/, '') + '...';
+function parseIds(val) {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    return val.split(',').filter(Boolean);
 }
+
+
+// function makeExcerpt(content, length = 240) {
+//     if (!content) return '';
+//     const plain = content.replace(/<[^>]+>/g, ''); // strip HTML tags
+//     if (plain.length <= length) return plain;
+//     return plain.slice(0, length).trim().replace(/\s+\S*$/, '') + '...';
+// }
 
 /**
  * Controller
@@ -54,11 +61,30 @@ class PostsController {
             const categories = await PostCategory.findAll();
             const tags = await PostTag.findAll();
             res.render('public/posts/_editor', {
-                title: 'Create New Post',
+                title: 'New post',
                 categories,
                 tags,
-                post : {},
+                post: {},
                 action: '/posts/create',
+            });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    static async showEditForm(req, res) {
+        try {
+            if (!req.user) return res.status(401).json({ message: 'Authentication required' });
+            const post = await Post.findById(req.params.id);
+            if (!post) return res.status(404).json({ message: 'Post not found' });
+            const categories = await PostCategory.findAll();
+            const tags = await PostTag.findAll();
+            res.render('public/posts/_editor', {
+                title: 'Edit post',
+                categories,
+                tags,
+                post,
+                action: `/posts/${post.id}/update`,
             });
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -95,7 +121,6 @@ class PostsController {
             if (!post) return res.status(404).json({ message: 'Post not found' });
             const categories = await PostCategoryRelation.findCategoriesForPost(post.id);
             const tags = await PostTagRelation.findTagsForPost(post.id);
-
             res.render('public/posts/show', {
                 title: post.title,
                 post,
@@ -108,16 +133,17 @@ class PostsController {
     }
 
     // any authenticated user can create
-    static async  create(req, res) {
+    static async create(req, res) {
         try {
             if (!req.user) return res.status(401).json({ message: 'Authentication required' });
 
-            const {
-                title, content, excerpt, featured_image_url,
-                status = 'draft', is_featured = false, read_time = 5,
-                category_ids = [], tag_ids = []
+            let {
+                title, content,
+                status = 'draft', is_featured = false, read_time = 5
             } = req.body;
-            
+
+            let category_ids = parseIds(req.body.category_ids);
+            let tag_ids = parseIds(req.body.tag_ids);
             const slugBase = slugify(title);
             // ensure uniqueness by suffix if necessary
             let slug = slugBase;
@@ -128,17 +154,19 @@ class PostsController {
                 if (count > 50) break;
             }
 
-            const finalExcerpt = excerpt || makeExcerpt(content);
+            let featured_image_url = req.body.featured_image_url || null;
+            if (req.cloudinaryResult) {
+                featured_image_url = req.cloudinaryResult.secure_url;
+            }
 
             const post = await Post.create({
                 user_id: req.user.userId,
                 title,
                 slug,
                 content,
-                excerpt: finalExcerpt,
                 featured_image_url,
                 status,
-                is_featured: true ?  1 : 0,
+                is_featured: true ? 1 : 0,
                 read_time
             });
 
@@ -181,7 +209,13 @@ class PostsController {
             const isAdmin = req.user.role === 'admin';
             if (!isOwner && !isAdmin) return res.status(403).json({ message: 'Forbidden' });
 
-            const updates = { ...req.body };
+            const updates = {
+                title: req.body.title,
+                content: req.body.content,
+                status: req.body.status,
+                read_time: req.body.read_time,
+                is_featured: req.body.is_featured ? 1 : 0
+            };
 
             // If title changed, regenerate slug safely
             if (updates.title && updates.title !== post.title && !updates.slug) {
@@ -196,38 +230,42 @@ class PostsController {
                 updates.slug = slug;
             }
 
-            // If content changed and no explicit excerpt, regenerate excerpt
-            if (updates.content && !updates.excerpt) {
-                updates.excerpt = makeExcerpt(updates.content);
+            // keep old image unless new uploaded
+            updates.featured_image_url = post.featured_image_url;
+
+            if (req.cloudinaryResult) {
+                updates.featured_image_url = req.cloudinaryResult.secure_url;
             }
 
             const updated = await Post.update(post.id, updates);
+            const tag_ids = parseIds(req.body.tag_ids);
+            const category_ids = parseIds(req.body.category_ids);
 
             // Optionally update category/tag relations if provided
-            if (Array.isArray(req.body.category_ids)) {
+            if (category_ids) {
                 // remove all existing and add new ones (simple approach)
                 const existingCats = await PostCategoryRelation.findCategoriesForPost(post.id);
                 for (const c of existingCats) {
                     await PostCategoryRelation.remove(post.id, c.id);
                 }
-                for (const cid of req.body.category_ids) {
+                for (const cid of category_ids) {
                     const category = await PostCategory.findById(cid);
                     if (category) await PostCategoryRelation.add(post.id, cid);
                 }
             }
 
-            if (Array.isArray(req.body.tag_ids)) {
+            if (tag_ids) {
                 const existingTags = await PostTagRelation.findTagsForPost(post.id);
                 for (const t of existingTags) {
                     await PostTagRelation.remove(post.id, t.id);
                 }
-                for (const tid of req.body.tag_ids) {
+                for (const tid of tag_ids) {
                     const tag = await PostTag.findById(tid);
                     if (tag) await PostTagRelation.add(post.id, tid);
                 }
             }
 
-            res.json({ post: updated });
+            res.json({ success: true, message: 'Post updated', post: updated });
         } catch (err) {
             console.error('Update post error:', err);
             res.status(500).json({ error: err.message });

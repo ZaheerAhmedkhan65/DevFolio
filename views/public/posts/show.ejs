@@ -5,10 +5,14 @@
             <!-- Author Info -->
             <div class="flex items-center mb-6">
                 <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                    HB
+                    <a href="/<%= post.username_slug %>">
+                        <img src="<%= post.profile_picture_url %>" alt="<%= post.display_name %>'s profile picture" class="w-12 h-12 rounded-full object-cover %>">
+                    </a>
                 </div>
                 <div class="ml-4">
-                    <h2 class="font-semibold text-gray-800 text-lg">Hadil Ben Abdallah</h2>
+                    <a href="/<%= post.username_slug %>">
+                        <h2 class="font-semibold text-gray-800 text-lg"><%= post.display_name %></h2>
+                    </a>
                     <div class="flex items-center text-gray-500 text-sm mt-1">
                         <span><%= new Date(post.published_at).toDateString() %></span>
                         <span class="mx-2">•</span>
@@ -19,7 +23,7 @@
 
             <!-- Post Title -->
             <h1 class="text-4xl font-bold text-gray-900 mb-6 leading-tight">
-                Every Sunday, I Refactor Old Code and It's the Smartest Habit I've Ever Built
+                <%= post.title %>
             </h1>
 
             <!-- Engagement Stats -->
@@ -47,65 +51,16 @@
         <% } %>
 
         <!-- Post Content -->
-        <article class="bg-white rounded-xl shadow-md p-8 mb-8">
-            <div class="prose prose-lg max-w-none">
-                <!-- This would be your dynamic post.content -->
-                <p class="text-xl text-gray-700 leading-relaxed mb-6">
-                    Refactoring old code might seem like a tedious task, but making it a regular habit has transformed my approach to software development. Every Sunday, I dedicate a few hours to revisiting and improving code I've written in the past.
-                </p>
-
-                <p class="text-gray-700 leading-relaxed mb-6">
-                    This practice has helped me identify patterns, eliminate technical debt, and apply new knowledge to old problems. The benefits extend beyond just cleaner code - it's made me a more thoughtful and efficient developer.
-                </p>
-
-                <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Why Sunday Works Best</h2>
-
-                <p class="text-gray-700 leading-relaxed mb-6">
-                    Sunday evenings provide the perfect mental space for reflection. The week's pressure is gone, and I can approach code review with fresh eyes and a calm mindset.
-                </p>
-
-                <blockquote class="border-l-4 border-blue-500 pl-6 py-2 my-6 bg-blue-50 rounded-r-lg">
-                    <p class="text-gray-700 italic text-lg">
-                        "The Sunday refactor has become my secret weapon for continuous improvement. It's where I turn good code into great code."
-                    </p>
-                </blockquote>
-
-                <p class="text-gray-700 leading-relaxed mb-6">
-                    Over time, this habit has significantly reduced bugs in my projects and made maintenance much more manageable. New team members can onboard faster when the codebase is clean and well-organized.
-                </p>
-
-                <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">My Refactoring Checklist</h2>
-
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
-                    <li>Remove duplicate code and create reusable functions</li>
-                    <li>Improve variable and function names for clarity</li>
-                    <li>Simplify complex conditional logic</li>
-                    <li>Update dependencies to latest stable versions</li>
-                    <li>Add or improve documentation</li>
-                    <li>Optimize database queries and API calls</li>
-                </ul>
-
-                <p class="text-gray-700 leading-relaxed">
-                    This weekly practice has not only improved my code quality but also made me a better developer overall. I highly recommend giving it a try!
-                </p>
-            </div>
-        </article>
+        <div class="prose prose-lg max-w-none">
+            <%- post.content %>
+        </div>
 
         <!-- Tags Section -->
         <div class="mb-8">
             <div class="flex flex-wrap gap-3">
-                <a href="/tags/webdev" class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors">
-                    #webdev
-                </a>
-                <a href="/tags/css" class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium hover:bg-green-200 transition-colors">
-                    #css
-                </a>
-                <a href="/tags/javascript" class="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors">
-                    #javascript
-                </a>
-                <a href="/tags/python" class="px-4 py-2 bg-red-100 text-red-800 rounded-full text-sm font-medium hover:bg-red-200 transition-colors">
-                    #python
-                </a>
+                <%post.tags.forEach(tag=>{%>
+                    <span class="bg-gray-100 text-gray-800 text-xs px-2.5 py-0.5 rounded">#<%=tag%></span>
+                <%})%>
             </div>
         </div>
 

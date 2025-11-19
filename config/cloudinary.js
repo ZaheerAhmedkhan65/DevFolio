@@ -12,27 +12,30 @@ cloudinary.config({
 // Upload image to Cloudinary
 const uploadToCloudinary = async (filePath, folder = 'profiles') => {
   try {
-    const result = await cloudinary.uploader.upload(filePath, {
-      folder: folder,
-      quality: 'auto',
-      fetch_format: 'auto',
-      width: 500,
-      height: 500,
-      crop: 'limit'
-    });
-    
-    // Delete local file after upload
-    fs.unlinkSync(filePath);
-    
-    return result;
-  } catch (error) {
-    // Delete local file if upload fails
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    const isGif = filePath.toLowerCase().endsWith('.gif');
+
+    const uploadOptions = {
+      folder,
+      resource_type: isGif ? "auto" : "image"   // <-- IMPORTANT FIX
+    };
+
+    // Apply transformations ONLY if NOT GIF
+    if (!isGif) {
+      uploadOptions.quality = "auto:best";
+      uploadOptions.fetch_format = "auto";      // <-- FIXED TYPO
     }
+
+    const result = await cloudinary.uploader.upload(filePath, uploadOptions);
+
+    fs.unlinkSync(filePath);
+    return result;
+
+  } catch (error) {
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     throw error;
   }
 };
+
 
 // Delete image from Cloudinary
 const deleteFromCloudinary = async (publicId) => {
