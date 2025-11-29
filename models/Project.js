@@ -7,6 +7,18 @@ class Project {
         return rows[0];
     }
 
+    static async findByUsernameSlug(slug) {
+        const [rows] = await db.query(
+            `SELECT p.*
+         FROM users u
+         JOIN projects p ON p.user_id = u.id
+         WHERE u.username_slug = ?`,
+            [slug]
+        );
+
+        return rows; // returns an array of projects
+    }
+
     static async findByUserId(userId) {
         const [rows] = await db.query(
             'SELECT * FROM projects WHERE user_id = ? ORDER BY display_order ASC, created_at DESC',
@@ -58,6 +70,11 @@ class Project {
 
     static async delete(id) {
         await db.query('DELETE FROM projects WHERE id = ?', [id]);
+    }
+
+    static async  countByUserId(userId) {
+        const [rows] = await db.query('SELECT COUNT(*) as count FROM projects WHERE user_id = ?', [userId]);
+        return rows[0].count;
     }
 }
 

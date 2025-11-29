@@ -47,6 +47,14 @@ class ProfileSkill {
             [profile_id, skill_id]
         );
     }
+
+    static async countByProfileId(profileId) {
+        const [rows] = await db.query(
+            'SELECT COUNT(*) as count FROM profile_skills WHERE profile_id = ?',
+            [profileId]
+        );
+        return rows[0].count;
+    }
 }
 
 module.exports = ProfileSkill;

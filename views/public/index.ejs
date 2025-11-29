@@ -58,7 +58,7 @@
                             
                                     <!-- Dropdown Menu -->
                                     <div class="post-menu-body hidden absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md border border-gray-200 py-2 z-50">
-                                        <% if(user && user.userId==profile.user_id){%>
+                                        <% if(user && user.userId==post.user_id){%>
                                             <button onclick="openEditPostModal(<%= post.id %>)" class="block px-3 py-2 rounded-md hover:bg-gray-100 w-full text-left">
                                               Edit post
                                             </button>

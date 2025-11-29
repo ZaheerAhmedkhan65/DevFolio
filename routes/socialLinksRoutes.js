@@ -9,12 +9,12 @@ router.get('/profile/:profileId', SocialLinksController.getLinks);
 router.get('/:id', SocialLinksController.getLink);
 
 // Add a social link
-router.post('/', SocialLinksController.createLink);
+router.post('/add', SocialLinksController.createLink);
 
 // Update social link
 router.put('/:id', SocialLinksController.updateLink);
 
 // Delete a link
-router.delete('/:id', SocialLinksController.deleteLink);
+router.post('/:id/delete', SocialLinksController.deleteLink);
 
 module.exports = router;

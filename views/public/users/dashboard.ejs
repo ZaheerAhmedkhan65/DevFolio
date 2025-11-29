@@ -6,19 +6,15 @@
         <div class="lg:col-span-1">
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <nav class="space-y-2">
-                    <a href="#" class="flex items-center space-x-3 p-3 bg-blue-50 text-blue-700 rounded-lg">
+                    <a href="/dashboard" class="flex items-center space-x-3 p-3 bg-blue-50 text-blue-700 rounded-lg">
                         <i class="fas fa-tachometer-alt w-5"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i class="fas fa-user w-5"></i>
-                        <span>Profile</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <a href="/projects/<%= user.username_slug %>" class="flex items-center space-x-3 p-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                         <i class="fas fa-briefcase w-5"></i>
                         <span>Projects</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <a href="/settings" class="flex items-center space-x-3 p-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                         <i class="fas fa-cog w-5"></i>
                         <span>Settings</span>
                     </a>
@@ -34,7 +30,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600">Total Projects</p>
-                            <p class="text-2xl font-bold text-gray-900">12</p>
+                            <p class="text-2xl font-bold text-gray-900"><%= projectsCount %></p>
                         </div>
                         <div class="p-3 bg-blue-100 rounded-lg">
                             <i class="fas fa-briefcase text-blue-600 text-xl"></i>
@@ -56,7 +52,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600">Skills</p>
-                            <p class="text-2xl font-bold text-gray-900">8</p>
+                            <p class="text-2xl font-bold text-gray-900"><%= skillsCount %></p>
                         </div>
                         <div class="p-3 bg-purple-100 rounded-lg">
                             <i class="fas fa-star text-purple-600 text-xl"></i>
@@ -89,40 +85,6 @@
                         <i class="fas fa-chart-bar text-orange-600 text-xl mb-2"></i>
                         <span class="text-sm text-gray-700">Analytics</span>
                     </button>
-                </div>
-            </div>
-
-            <!-- Recent Projects -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900">Recent Projects</h2>
-                    <button
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
-                        <i class="fas fa-plus"></i>
-                        <span>Add New Project</span>
-                    </button>
-                </div>
-                <div class="space-y-4">
-                    <!-- Project Item -->
-                    <div
-                        class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                        <div class="flex items-center space-x-4">
-                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60&q=80"
-                                alt="Project" class="w-12 h-12 rounded-lg object-cover">
-                            <div>
-                                <h3 class="font-semibold text-gray-900">E-Commerce Platform</h3>
-                                <p class="text-sm text-gray-600">Last updated 2 days ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Featured</span>
-                            <button class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Add more project items here -->
                 </div>
             </div>
         </div>

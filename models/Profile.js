@@ -53,7 +53,8 @@ class Profile {
         values.push(id);
 
         await db.query(`UPDATE profiles SET ${fields.join(', ')} WHERE user_id = ?`, values);
-        return this.findById(id);
+        const user = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+        return user[0];
     }
 
     static async delete(id) {

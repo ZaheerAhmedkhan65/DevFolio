@@ -44,13 +44,41 @@
                 <h1 class="text-3xl font-bold text-gray-900">
                     <%= profile.username %>
                 </h1>
-                <p class="text-gray-500 mt-1 mb-3">Full Stack Developer & UI/UX Enthusiast</p>
+                <p class="text-gray-500 mt-1 mb-3"><%= profile.bio %></p>
 
-                <div class="flex justify-center space-x-4 mb-8">
-                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">JavaScript</span>
-                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Node.js</span>
-                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">React</span>
-                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">Python</span>
+                <!-- Skills Slider Wrapper -->
+                <div class="relative w-full max-w-4xl mx-auto mt-8">
+                
+                    <!-- Prev Button -->
+                    <button id="prevBtn"
+                        class="absolute top-1/2 -translate-y-1/2 bg-white shadow px-5 py-3 rounded-full hover:bg-gray-100 z-20" style="left: -10px;">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                
+                    <!-- Skills Scroll Container -->
+                    <div id="skillsContainer"
+                        class="flex space-x-3 overflow-x-auto scroll-smooth no-scrollbar px-12 py-2">
+                        <% profileSkills.forEach(ps => { %>
+                            <% 
+                                let color = "";
+                                if (ps.proficiency === "Expert") color = "bg-green-100 text-green-800";
+                                else if (ps.proficiency === "Advanced") color = "bg-blue-100 text-blue-800";
+                                else if (ps.proficiency === "Intermediate") color = "bg-yellow-100 text-yellow-800";
+                                else color = "bg-red-100 text-red-800"; // Beginner
+                            %>
+                         
+                            <span class="<%= color %> px-4 py-2 rounded-full text-sm shrink-0">
+                                <%= ps.name %>
+                            </span>
+                        <% }) %>
+                    </div>
+                
+                    <!-- Next Button -->
+                    <button id="nextBtn"
+                        class="absolute top-1/2 -translate-y-1/2 bg-white shadow px-5 py-3 rounded-full hover:bg-gray-100 z-20" style="right: -10px;">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                
                 </div>
 
                 <!-- Info -->
@@ -68,10 +96,9 @@
                     </div>
 
                     <div class="flex items-center space-x-3">
-                        <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-github text-lg"></i></a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600"><i
-                                class="fab fa-linkedin text-lg"></i></a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-twitter text-lg"></i></a>
+                        <% socialLinks.forEach(sl => { %>
+                            <a href="<%= sl.url %>" class="text-gray-600 hover:text-blue-600"><i class="<%= sl.platform_icon %> text-lg"></i></a>
+                        <% }) %>
                     </div>
                 </div>
             </div>
@@ -278,6 +305,24 @@
         </main>
     </div>
 </div>
+<style>
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script>
+const box = document.getElementById("skillsContainer");
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+    box.scrollBy({ left: 200, behavior: "smooth" });
+});
+
+document.getElementById("prevBtn").addEventListener("click", () => {
+    box.scrollBy({ left: -200, behavior: "smooth" });
+});
+</script>
+
+
 <!-- Scripts -->
 <script>
     const menuBtn = document.getElementById("menuBtn");

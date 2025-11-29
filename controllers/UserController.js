@@ -6,11 +6,13 @@ const SocialLink = require('../models/SocialLink');
 const Post = require('../models/Post');
 const PostTag = require('../models/PostTag');
 const Skill = require('../models/Skill');
+const Project = require('../models/Project');
+const ProfileView = require('../models/ProfileView');
 
 class UserController {
     static async list(req, res) {
         try {
-            const users = await User.findAll();``
+            const users = await User.findAll(); ``
             res.json(users);
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -20,10 +22,9 @@ class UserController {
     static async dashboard(req, res) {
         try {
             const profile = await Profile.findByUserId(req.user.userId);
-            const drafPosts = await Post.list({ user_id: profile.id, status: 'draft' });
-            const publishedPosts = await Post.list({ user_id: profile.id, status: 'published' });
-            const posts = { draft: drafPosts, published: publishedPosts };
-            res.render('public/users/dashboard', { title: profile.display_name + "'s Dashboard", profile, posts });
+            const projectsCount = await Project.countByUserId(req.user.userId);
+            const skillsCount = await ProfileSkill.countByProfileId(profile.id);
+            res.render('public/users/dashboard', { title: profile.display_name + "'s Dashboard", profile, projectsCount, skillsCount });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -36,11 +37,21 @@ class UserController {
 
             const profile = await Profile.findByUserId(user.id);
             if (!profile) return res.status(404).json({ message: 'User not found' });
-
-            const drafPosts = await Post.list({ user_id: profile.id, status: 'draft' });
-            const publishedPosts = await Post.list({ user_id: profile.id, status: 'published' });
+            let profileSkills = await ProfileSkill.findByProfileId(profile.id);
+            const drafPosts = await Post.list({ userId: user.id, status: 'draft' });
+            const publishedPosts = await Post.list({ userId: user.id, status: 'published' });
             const posts = { draft: drafPosts, published: publishedPosts };
-            res.render('public/users/profile', { title: profile.display_name + "'s Profile", profile, posts, profile_user: user });
+            const socialLinks = await SocialLink.findByProfileId(profile.id);
+            if (req.user.userId !== user.id) {
+                await ProfileView.addView(
+                    profile.id,           // profile_id
+                    req.user.userId,      // viewer_id
+                    req.ip,               // viewer_ip
+                    req.headers['user-agent'], // user_agent
+                    req.get('referer')    // referrer
+                );
+            }
+            res.render('public/users/profile', { title: profile.display_name + "'s Profile", profile, posts, profile_user: user, profileSkills, socialLinks });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -59,8 +70,8 @@ class UserController {
 
     static async update(req, res) {
         try {
-            const updated = await User.update(req.params.id, req.body);
-            res.json(updated);
+            const updated = await User.updateUser(req.params.id, req.body);
+            res.redirect('/');
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -82,7 +93,7 @@ class UserController {
             const skills = await Skill.findAll();
             const profileSections = await ProfileSection.findByProfileId(profile.id);
             const socialLinks = await SocialLink.findByProfileId(profile.id);
-            res.render('public/users/edit_profile', { title: profile.display_name + "'s Profile", profile, profileSkills, skills, socialLinks, profileSections });
+            res.render('public/users/edit_profile', { title: profile.display_name + "'s Profile", profile, profileSkills, skills, socialLinks, profileSections, getProficiencyLevel, getSectionColor, getSectionIcon, formatDate });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -100,7 +111,7 @@ class UserController {
             updateData.is_public = req.body.is_public === 'on' ? 1 : 0;
 
             const updated = await Profile.update(req.user.userId, updateData);
-            res.json({ success: true, data: updated });
+            res.redirect('/'+updated[0].username_slug);
 
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -108,6 +119,56 @@ class UserController {
     }
 
 
+}
+
+function getProficiencyLevel(proficiency) {
+    switch (proficiency) {
+        case 'Beginner':
+            return 1;
+        case 'Intermediate':
+            return 2;
+        case 'Advanced':
+            return 3;
+        case 'Expert':
+            return 4;
+        default:
+            return 0;
+    }
+}
+
+function getSectionColor(section_type) {
+    switch (section_type) {
+        case 'About':
+            return 'blue';
+        case 'Experience':
+            return 'green';
+        case 'Projects':
+            return 'red';
+        case 'Skills':
+            return 'yellow';
+        default:
+            return 'gray';
+    }
+}
+
+function getSectionIcon(section_type) {
+    switch (section_type) {
+        case 'About':
+            return 'fas fa-user';
+        case 'Experience':
+            return 'fas fa-briefcase';
+        case 'Projects':
+            return 'fas fa-code';
+        case 'Skills':
+            return 'fas fa-cogs';
+        default:
+            return 'fas fa-question';
+    }
+}
+
+function formatDate(date) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(date).toLocaleDateString('en-US', options);
 }
 
 module.exports = UserController;

@@ -20,6 +20,7 @@ const postCategoriesRoutes = require('./routes/postCategoriesRoutes');
 const postTagsRoutes = require('./routes/postTagsRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const profileSectionsRoutes = require('./routes/profileSectionRoutes');
 
 const Post = require('./models/Post');
 const User = require('./models/User');
@@ -43,7 +44,6 @@ app.set('view engine', 'ejs');
 
 // Default layout
 app.set("layout", "layouts/public");
-
 
 /* ---------------------- Bind User First (Global) ---------------------- */
 app.use(bindUser);
@@ -72,6 +72,7 @@ app.get('/', async (req, res) => {
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 /* ----------------------- Protected User Routes ----------------------- */
+app.use('/', profileSectionsRoutes);
 app.use('/profiles', authenticate, profileRoutes);
 app.use('/projects', authenticate, projectRoutes);
 app.use('/skills', authenticate, skillRoutes);

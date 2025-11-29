@@ -11,8 +11,6 @@ router.get('/settings', authenticate, UserController.editProfile);
 router.post('/settings', authenticate, uploadProfileImage, uploadToCloudinaryMiddleware, UserController.updateProfile);
 router.get('/:username_slug', UserController.get);
 
-
-
 // Admin-only endpoints
 // router.get('/', authenticate, isAdmin, UserController.list);
 // router.post('/', authenticate, isAdmin, UserController.create);

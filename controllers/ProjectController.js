@@ -4,8 +4,8 @@ class ProjectController {
 
     static async getProjects(req, res) {
         try {
-            const projects = await Project.findByUserId(req.params.userId);
-            res.json(projects);
+            const projects = await Project.findByUsernameSlug(req.params.username_slug);
+            res.render('public/projects/index', { title: 'Projects', projects });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

@@ -43,7 +43,7 @@ class ProfileSection {
             [
                 profile_id, section_type, title, subtitle, description, 
                 content ? JSON.stringify(content) : null,
-                start_date, end_date, is_current, display_order, is_public
+                start_date, end_date, is_current ? 1 : 0, display_order, is_public ? 1 : 0
             ]
         );
 

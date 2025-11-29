@@ -24,7 +24,7 @@ class SocialLinksController {
     static async createLink(req, res) {
         try {
             const link = await SocialLink.create(req.body);
-            res.status(201).json(link);
+            res.redirect('/settings');
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
